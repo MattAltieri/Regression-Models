@@ -100,15 +100,41 @@ ggplot(galton, aes(x=child)) +
 
 ## The Math (Not Required for This Class)
 
+- Remeber that $\bar Y = \frac{1}{n}\sum_{i=1}^2Y_i$
+
 $$
 \begin{eqnarray*}
-\sum_{i=1}^n(Y_i-\mu )^2
-& = & \sum_{i=1}^n(Y_i-\bar Y +\bar Y-\mu )^2 \\
-& = & \sum_{i=1}^n(Y_i-\bar Y)^2 + 2\sum_{i=1}^n(Y_i-\bar Y)(\bar Y-\mu ) + \sum_{i=1}^n(\bar Y-\mu )^2 \\
-& = & \sum_{i=1}^n(Y_i-\bar Y)^2 + 2(\bar Y-\mu )\sum_{i=1}^n(Y_i-\bar Y) + \sum_{i=1}^n(\bar Y-\mu )^2 \\
-& = & \sum_{i=1}^n(Y_i-\bar Y)^2 + 2(\bar Y-\mu )(\sum_{i=1}^nY_i-n\bar Y) + \sum_{i=1}^n(\bar Y-\mu )^2 \\
-& = & \sum_{i=1}^n(Y_i-\bar Y)^2 + \sum_{i=1}^n(\bar Y-\mu )^2 \\
-& \ge & \sum_{i=1}^n(Y_i-\bar Y)^2
+\sum_{i=1}^n\left(Y_i - \mu\right)^2 \
+& = & \sum_{i=1}^n\left(Y_i - \bar Y + \bar Y - \mu\right)^2 \\
+\\
+& = & \sum_{i=1}^n\left(Y_i - \bar Y\right)^2 + \
+2\sum_{i=1}^n\left(Y_i - \bar Y\right)\left(\bar Y - \mu\right) + \
+\sum_{i=1}^n\left(\bar Y - \mu\right)^2 \\
+\\
+& = & \sum_{i=1}^n\left(Y_i - \bar Y\right)^2 + \
+2\left(\bar Y - \mu\right)\sum_{i=1}^n\left(Y_i - \bar Y\right) + \
+\sum_{i=1}^n\left(\bar Y - \mu\right)^2 \\
+\\
+& = & \sum_{i=1}^n\left(Y_i - \bar Y\right)^2 + \
+2\left(\bar Y - \mu\right)\left(\sum_{i=1}^n Y_i - n \bar Y\right) + \
+\sum_{i=1}^n\left(\bar Y - \mu\right)^2 \\
+\\
+& = & \sum_{i=1}^n\left(Y_i - \bar Y\right)^2 + \
+2\left(\bar Y - \mu\right)\left(\sum_{i=1}^n Y_i - n \times \frac{1}{n} \times \sum_{i=1}^n Y_i\right) + \
+\sum_{i=1}^n\left(\bar Y - \mu\right)^2 \\
+\\
+& = & \sum{i=1}^n\left(Y_i - \bar Y\right)^2 + \
+2\left(\bar Y - \mu\right)\left(\sum_{i=1}^n Y_i - 1 \times \sum_{i=1}^n Y_i\right) + \
+\sum_{i=1}^n\left(\bar Y - \mu\right)^2 \\
+\\
+& = & \sum{i=1}^n\left(Y_i - \bar Y\right)^2 + \
+2\left(\bar Y - \mu\right) \times 0 + \
+\sum_{i=1}^2\left(\bar Y - \mu\right)^2 \\
+\\
+& = & \sum_{i=1}^n\left(Y_i - \bar Y\right)^2 + \
+\sum_{i=1}^n\left(\bar Y - \mu\right)^2 \\
+\\
+& \ge & \sum_{i=1}^n\left(Y_i - \bar Y\right)^2
 \end{eqnarray*}
 $$
 
