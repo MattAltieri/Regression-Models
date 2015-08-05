@@ -62,11 +62,8 @@ $$
 - The least squares model fit to the line $Y = \beta_0 + \beta_ X$ through the data pairs $\left(X_i,Y_i\right)$ with $Y_i$ as the outcome obtains the line $Y = \hat \beta_0 + \hat \beta_1 X$ where
 
 $$
-\begin{eqnarray*}
-\hat \beta_1 \
-& = & Cor\left(Y,X\right) \frac{Sd\left(Y\right)}{Sd\left(X\right)} \hat \beta_0 \\
-& = & \bar Y - \hat \beta_1 \bar X
-\end{eqnarray*}
+\hat \beta_1 = Cor\left(Y,X\right) \frac{Sd\left(Y\right)}{Sd\left(X\right)} \\
+\hat \beta_0 = \bar Y - \hat \beta_1 \bar X
 $$
 
 - $\hat \beta_1$ has the units of $Y/X$, $\hat \beta_0$ has the units of $Y$
