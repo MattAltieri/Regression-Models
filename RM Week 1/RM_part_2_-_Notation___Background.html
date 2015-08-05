@@ -77,18 +77,20 @@ img {
 <li>We will try to minimize the amount of mathematics required for this class</li>
 <li>No calculus is required</li>
 </ul>
+<hr />
 </div>
 <div id="notation-for-data" class="section level2">
 <h2>Notation for data</h2>
 <ul>
-<li>We write <span class="math inline">\(X_1,X_2,...,X_n\)</span> to describe <span class="math inline">\(n\)</span> data points</li>
+<li>We write <span class="math inline">\(X_1,X_2,...,X_n\)</span> to describe <span class="math inline">\(n\)</span> data points (“indexing a variable”)</li>
 <li>As an example, consider the dataset {1, 2, 5}. Then:
 <ul>
 <li><span class="math inline">\(X_1 = 1,X_2 = 2,X_3 = 5\)</span> and <span class="math inline">\(n = 3\)</span></li>
 </ul></li>
-<li>We often use a different letter than <span class="math inline">\(X\)</span>, such as <span class="math inline">\(Y_1,...,Y_n\)</span></li>
+<li>We often use different letters than <span class="math inline">\(X\)</span>, such as <span class="math inline">\(Y_1,...,Y_n\)</span></li>
 <li>We will typically use Greek letters for things we don’t know, such as <span class="math inline">\(\mu\)</span> for a mean that we’d like to estimate</li>
 </ul>
+<hr />
 </div>
 <div id="the-empirical-mean" class="section level2">
 <h2>The Empirical Mean</h2>
@@ -112,6 +114,7 @@ img {
 <p><span class="math display">\[
 \sum_{i=1}^n \left(X_i - \mu\right)^2
 \]</span></p>
+<hr />
 </div>
 <div id="the-empirical-standard-deviation-and-variance" class="section level2">
 <h2>The Empirical Standard Deviation and Variance</h2>
@@ -129,6 +132,7 @@ S^2 \
 <li>The empirical standard deviation is defined as <span class="math inline">\(S = \sqrt S^2\)</span>. Notice that the standard deviation has the same units as the data</li>
 <li>The data defined by <span class="math inline">\(X_i/s\)</span> have empirical standard deviation 1. This is called “scaling” the data</li>
 </ul>
+<hr />
 </div>
 <div id="normalization" class="section level2">
 <h2>Normalization</h2>
@@ -136,7 +140,7 @@ S^2 \
 <li>The data defined by</li>
 </ul>
 <p><span class="math display">\[
-Z_ = \frac{X_i - \bar X}{s}
+Z_i = \frac{X_i - \bar X}{s}
 \]</span></p>
 <p>have empircal mean zero and empirical standard deviation 1</p>
 <ul>
@@ -144,6 +148,7 @@ Z_ = \frac{X_i - \bar X}{s}
 <li>Normalized data are centered at 0 and have units equal to standard deviations of the original data</li>
 <li>Example, a value of 2 from normalized data means that data point was two standard deviations larger than the mean</li>
 </ul>
+<hr />
 </div>
 <div id="the-empirical-covariance" class="section level2">
 <h2>The Empirical Covariance</h2>
@@ -165,6 +170,7 @@ Cov\left(X,Y\right) \
 Cor\left(X,Y\right) = \frac{Cov\left(X,Y\right)}{S_x S_y}
 \]</span></p>
 <p>where <span class="math inline">\(S_x\)</span> and <span class="math inline">\(S_y\)</span> are the estimates of standard deviations for the <span class="math inline">\(X\)</span> observations and <span class="math inline">\(Y\)</span> observations, respectively</p>
+<hr />
 </div>
 <div id="some-facts-about-correlation" class="section level2">
 <h2>Some Facts About Correlation</h2>
