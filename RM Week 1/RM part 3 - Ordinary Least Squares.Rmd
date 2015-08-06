@@ -126,3 +126,46 @@ ggplot(filter(freqData, freq > 0), aes(x=parent, y=child)) +
     scale_color_gradient(low="lightblue", high="white") +
     geom_smooth(method="lm", formula=y ~ x)
 ```
+
+---
+
+## Proof
+
+$$
+\begin{eqnarray*}
+\hat \beta_1 \
+& = & Cor\left(Y,X\right)\frac{Sd\left(Y\right)}{Sd\left(X\right)} \\
+\end{eqnarray*}
+$$
+
+#### Regression through the origin
+
+$$
+\begin{eqnarray*}
+Y = X\beta & \\
+\sum_{i=1}^n\left(Y_i - X_i\beta\right)^2 & \\
+& = & \sum_{i=1}^n\left(Y_i - X_i\hat\beta + X_i\hat\beta - X_i\beta\right)^2 \\
+& = & \sum_{i=1}^n\left(Y_i - X_i \hat \beta\right)^2 - 2\sum_{i=1}^n \left(Y_i - X_i\hat\beta\right)\left(X_i\hat\beta - X_i\beta\right) + \sum_{i=1}^n\left(X_i\hat\beta - X_i\beta\right)^2 \\
+& \ge & \sum_{i=1}^n\left(Y_i - X_i\hat\beta\right)^2 - 2\sum_{i=1}^n\left(Y_i - X_i\hat\beta\right)\left(X_i\hat\beta - X_i\beta\right) \\
+\end{eqnarray*}
+$$
+
+$$
+\mbox{Solve for } \hat\beta \mbox{ so that }\sum_{i=1}^n\left(Y_i - X_i\hat\beta\right)\left(X_i\hat\beta - X_i\beta\right) \mbox{ is 0} \\
+\begin{eqnarray*}
+0 & = & \sum_{i=1}^n\left(Y_i - X_i\hat\beta\right)\left(X_i\hat\beta - X_i\beta\right) \\
+& = & \sum_{i=1}^n\left(Y_i - X_i\hat\beta\right)X_i\left(\hat\beta - \beta\right) \\
+& = & \sum_{i=1}^n\left(Y_i - X_i\hat\beta\right)X_i \\
+\hat\beta & = & \frac{\sum_{i=1}^nY_iX_i}{\sum_{i=1}^nX_i^2} \\
+\end{eqnarray*}
+$$
+
+$$
+\mbox{Return to prev. and replace all } \hat\beta \\
+\begin{eqnarray*}
+\sum_{i=1}^n\left(Y_i - X_i\beta\right)^2 & \\
+& \ge & \sum_{i=1}^n\left(Y_i - X_i\hat\beta\right)^2 - 2\sum_{i=1}^n\left(Y_i - X_i\hat\beta\right)\left(X_i\hat\beta - X_i\beta\right) \\
+\end{eqnarray*}
+$$
+
+And here's where he lost me
