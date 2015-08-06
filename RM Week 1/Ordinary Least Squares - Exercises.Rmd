@@ -1,0 +1,7 @@
+---
+title: "Ordinary Least Squares - Exercises"
+output:
+    html_document:
+    keep_md: true
+---
+
