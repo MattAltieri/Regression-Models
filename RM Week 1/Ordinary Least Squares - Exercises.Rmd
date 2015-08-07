@@ -5,3 +5,129 @@ output:
     keep_md: true
 ---
 
+````{r setup, cache = FALSE, echo = FALSE, message = FALSE, warning = FALSE, tidy = FALSE, results='hide', error=FALSE}
+require(knitr)
+# make this an external chunk that can be included in any file
+options(width = 100)
+opts_chunk$set(message = F, error = F, warning = F, comment = NA, fig.align = 'center', dpi = 100, tidy = F, cache.path = '.cache/', fig.path = 'fig/')
+
+options(xtable.type = 'html')
+knit_hooks$set(inline = function(x) {
+  if(is.numeric(x)) {
+    round(x, getOption('digits'))
+  } else {
+    paste(as.character(x), collapse = ', ')
+  }
+})
+knit_hooks$set(plot = knitr:::hook_plot_html)
+runif(1)
+```
+
+## Question 1
+
+Install and load the package `UsingR` and load the `father.son` data with `data(father.son)`. Get the linear regression fit where the son's height is the outcome and the father's height is the predictor. Give the intercept and the slope, plot the data, and overlay the fitted regression line.
+
+```{r}
+library(UsingR)
+library(ggplot2)
+data(father.son)
+lm(father.son$sheight ~ father.son$fheight)
+ggplot(father.son, aes(x=jitter(father.son$fheight), y=jitter(father.son$sheight))) +
+    geom_point() +
+    geom_smooth(method="lm")
+```
+
+**ANSWER:** Intercept = 33.8866, slope=0.5141
+
+---
+
+## Question 2
+
+Refer to problem 1. Center the father and son variables and refit the model omitting the intercept Verify that the slope estimate is the same as the linear regression fit from problem 1.
+
+```{r}
+y <- father.son$sheight
+x <- father.son$fheight
+yc <- y - mean(y)
+xc <- x - mean(x)
+coef(lm(y ~ x))[2]
+coef(lm(yc ~ xc))[2]
+```
+
+---
+
+## Question 3
+
+Refer to problem 1. Normalize the father and son data and see that the fitted slope is the correlation
+
+```{r}
+yn <- yc / sd(y)
+xn <- xc / sd(x)
+cor(y, x)
+coef(lm(yn ~ xn))[2]
+```
+
+---
+
+## Question 4
+
+Go back to the linear regression line from problem 1. If a father's height was 63 inches, what would you predict the son's height to be?
+
+```{r}
+fs_lm <- lm(y ~ x)
+coef(fs_lm)[1] + coef(fs_lm)[2] * 63
+```
+
+**ANSWER:** 66.27447
+
+---
+
+## Question 5
+
+Consider a dataset where the standard deviation of the outcome variable is double that of the predictor. Also, the variables have a correlation of 0.3. If you fit a linear regression model, what would be the estimate of the slope?
+
+$$
+Cor(Y,X) = 0.3 \\
+Sd(Y) = 2Sd(X) \\
+\frac{Sd(Y)}{Sd(X)} = \frac{2Sd(X)}{Sd(X)} = 2 \\
+\hat\beta_1 = Cor(Y,X)\frac{Sd(Y)}{Sd(X)} = 0.3 \times 2 = 0.6
+$$
+
+**ANSWER:** 0.6
+
+---
+
+## Question 6
+
+Consider the previous problem. The outcome variable has a mean of 1 and the predictor variable has a mean of 0.5. What would be the intercept?
+
+$$
+\bar Y = 1 \\
+\bar X = 0.5 \\
+\hat\beta_0 = \bar Y - \hat\beta_1\bar X \\
+\hat\beta_0 = 1 - 0.6 \times 0.5
+$$
+
+```{r}
+1 - 0.6 * 0.5
+```
+
+---
+
+## Question 7
+
+True or false, if the predictor variable has mean 0, the estimated intercept from linear regression will be the mean of the outcome
+
+**ANSWER:** False
+
+---
+
+## Question 8
+
+Consider problem 5 again. What would be the estimated slope if the predictor and outcome were reversed?
+
+```{r}
+.3*.5
+```
+
+**ANSWER:** 0.15
