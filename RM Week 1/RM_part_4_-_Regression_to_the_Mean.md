@@ -36,3 +36,13 @@
 ## Plot of the Results
 
 <div class="rimage center"><img src="fig/unnamed-chunk-1-1.png" title="" alt="" class="plot" /></div>
+
+---
+
+## Discussion
+
+- If you had to predict a son's normalized height, it would be $Cor\left(Y,X\right) \times X_i$
+- If you had to predict a father's normalized height, it would be $Cor\left(Y,X\right) \times Y_i$
+- Multiplication by this correlation shrinks toward 0 (regression toward the mean)
+- If the correlation is 1 there is no regression to the mean (if father's height perfectly determines child's height and vice versa)
+- Note, regression to the mean has been thought about quite a bit and generalized

@@ -62,7 +62,7 @@ y <- (father.son$sheight - mean(father.son$sheight)) / sd(father.son$sheight)
 x <- (father.son$fheight - mean(father.son$fheight)) / sd(father.son$fheight)
 rho <- cor(x, y)
 library(ggplot2)
-ggplot(data.frame(x, y), aes(x=x, y-x)) +
+ggplot(data.frame(x, y), aes(x=x, y=y)) +
     geom_point(size=5, alpha=.2, color="black") +
     geom_point(size=4, alpha=.2, color="red") +
     geom_vline(xintercept=0) +
@@ -73,3 +73,13 @@ ggplot(data.frame(x, y), aes(x=x, y-x)) +
     xlab("Father's height, normalized") +
     ylab("Son's height, normalized")
 ```
+
+---
+
+## Discussion
+
+- If you had to predict a son's normalized height, it would be $Cor\left(Y,X\right) \times X_i$
+- If you had to predict a father's normalized height, it would be $Cor\left(Y,X\right) \times Y_i$
+- Multiplication by this correlation shrinks toward 0 (regression toward the mean)
+- If the correlation is 1 there is no regression to the mean (if father's height perfectly determines child's height and vice versa)
+- Note, regression to the mean has been thought about quite a bit and generalized
