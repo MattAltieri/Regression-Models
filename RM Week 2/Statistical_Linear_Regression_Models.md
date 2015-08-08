@@ -1,26 +1,6 @@
----
-title: "Statistical Linear Regression Models"
-output:
-    html_document:
-        keep_md: true
----
+# Statistical Linear Regression Models
 
-```{r setup, cache = FALSE, echo = FALSE, message = FALSE, warning = FALSE, tidy = FALSE}
-require(knitr)
-# make this an external chunk that can be included in any file
-options(width = 100)
-opts_chunk$set(message = F, error = F, warning = F, comment = NA, fig.align = 'center', dpi = 100, tidy = F, cache.path = '.cache/', fig.path = 'fig/')
 
-options(xtable.type = 'html')
-knit_hooks$set(inline = function(x) {
-  if(is.numeric(x)) {
-    round(x, getOption('digits'))
-  } else {
-    paste(as.character(x), collapse = ', ')
-  }
-})
-knit_hooks$set(plot = knitr:::hook_plot_html)
-```
 
 ## Basic Regression Model with Additive Gaussian Errors
 
@@ -125,25 +105,21 @@ Data is diamond prices (Singapore dollars) and diamond weights in carats (standa
 
 ## Plot of the data
 
-```{r, echo=FALSE, fig.height=5, fig.width=5}
-library(UsingR)
-library(ggplot2)
-data(diamond)
-ggplot(diamond, aes(x=carat, y=price)) +
-    xlab("Mass (carats)") +
-    ylab("Price (SIN $)") +
-    geom_point(size=7, color="black", alpha=0.5) +
-    geom_point(size=5, color="blue", alpha=0.2) +
-    geom_smooth(method="lm", color="black")
-```
+<div class="rimage center"><img src="fig/unnamed-chunk-1-1.png" title="" alt="" class="plot" /></div>
 
 ---
 
 ## Fitting the Linear Regression Model
 
-```{r}
+
+```r
 fit <- lm(price ~ carat, data=diamond)
 coef(fit)
+```
+
+```
+(Intercept)       carat 
+  -259.6259   3721.0249 
 ```
 
 - We estimate an expected 3721.02 (SIN) dollar increase in price for every carat increase in mass of diamond
@@ -153,9 +129,15 @@ coef(fit)
 
 ## Getting a More Interpretable Intercept
 
-```{r}
+
+```r
 fit2 <- lm(price ~ I(carat - mean(carat)), data=diamond)
 coef(fit2)
+```
+
+```
+           (Intercept) I(carat - mean(carat)) 
+              500.0833              3721.0249 
 ```
 
 Thus $500.1 is the expected price for the average sized diamond of the data (0.2042 carats)
@@ -169,41 +151,42 @@ Thus $500.1 is the expected price for the average sized diamond of the data (0.2
     - We expect a 372.102 (SIN) dollar change in price for every 1/10$^{th}$ of a carat increase in mass of diamond
 - Showing that it's the same if we rescale the $X$s and refit
 
-```{r}
+
+```r
 fit3 <- lm(price ~ I(carat * 10), data=diamond)
 coef(fit3)
+```
+
+```
+  (Intercept) I(carat * 10) 
+    -259.6259      372.1025 
 ```
 
 ---
 
 ## Predicting the Price of a Diamond
 
-```{r}
+
+```r
 newx <- c(0.16, 0.27, 0.34)
 coef(fit)[1] + coef(fit)[2] * newx
+```
+
+```
+[1]  335.7381  745.0508 1005.5225
+```
+
+```r
 predict(fit, newdata=data.frame(carat=newx))
+```
+
+```
+        1         2         3 
+ 335.7381  745.0508 1005.5225 
 ```
 
 ---
 
 Predicting values at the observed $X$s (red) and at the new $X$s (lines)
 
-```{r, echo=FALSE, fig.height=5, fig.width=5}
-plot(diamond$carat, diamond$price,
-     xlab="Mass (carats)",
-     ylab="Price (SIN $)",
-     bg="lightblue",
-     col="black", cex=1.1, pch=21, frame=F)
-abline(fit, lwd=2)
-points(diamond$carat, predict(fit), pch=19, col="red")
-lines(c(0.16, 0.16, 0.12),
-      c(200, coef(fit)[1] + coef(fit)[2] * 0.16,
-        coef(fit)[1] + coef(fit)[2] * 0.16))
-lines(c(0.27, 0.27, 0.12),
-      c(200, coef(fit)[1] + coef(fit)[2] * 0.27,
-        coef(fit)[1] + coef(fit)[2] * 0.27))
-lines(c(0.34, 0.34, 0.12),
-      c(200, coef(fit)[1] + coef(fit)[2] * 0.34,
-        coef(fit)[1] + coef(fit)[2] * 0.34))
-text(newx, rep(250, 3), labels=newx, pos=2)
-```
+<div class="rimage center"><img src="fig/unnamed-chunk-6-1.png" title="" alt="" class="plot" /></div>
