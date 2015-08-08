@@ -1,0 +1,8 @@
+---
+title: "Regression to the Mean - Exercises"
+output:
+    html_document:
+        keep_md: true
+---
+
+## Question 1
