@@ -1,0 +1,38 @@
+# Historical Side Note: Regression to Mediocrity
+
+
+
+## A Historically Famous Idea, Regression to the Mean
+
+- Why is it that the children of tall parents tend to be tall, but not as tall as their parents?
+- Why do children of short parents tend to be short, but not as short as their parents?
+- Why do parents of very short children tend to be short, but not as short as their children? And the same with parents of very tall children?
+- Why do the best performing athletes this year tend to do a little worse the following year?
+
+---
+
+## Regression to the Mean
+
+- These phenomena are all examples of the so-called regression to the mean
+- Invented by Francis Galton in the paper "Regression Towards Mediocrity in Hereditary Stature", The Journal of the Anthropological Institute of Great Britain and Ireland, Vol. 15 (1886)
+- Think of it this way: imagine if you simulated pairs of random normals
+    - The largest first ones would be the largest by chance, and the probability that there are smaller for the second simulation is high
+    - In other words $P\left(Y < x|X = x\right)$ gets bigger as $x$ heads into the very large values
+    - Similarly $P\left(Y > x|X = x\right)$ gets bigger as $x$ heads to very small values
+- Think of the regression line as the intrinsic part
+    - Unless $Cor\left(Y,X\right) = 1$ the intrinsic part isn't perfect
+    
+---
+
+## Regression to the Mean
+
+- Suppose that we normalize $X$ (child's height) and $Y$ (parent's height) so that they both have mean 0 and variance 1
+- Then, recall, our regression line passes through $\left(0,0\right)$ (the mean of $X$ and $Y$)
+- If the slope of the regression line is $Cor\left(Y,X\right)$, regardless of which variable is the outcome (recall, both standard deviation 1)
+- Notice if $X$ is the outcome and you create a plot where $X$ is the horizontal axis, the slope of the least squares line that you plot is $1/Cor\left(Y,X\right)$
+
+---
+
+## Plot of the Results
+
+<div class="rimage center"><img src="fig/unnamed-chunk-1-1.png" title="" alt="" class="plot" /></div>
