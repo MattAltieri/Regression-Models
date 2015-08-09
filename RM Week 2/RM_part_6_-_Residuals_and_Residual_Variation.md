@@ -85,7 +85,7 @@ max(abs(e - (y - coef(fit)[1] - coef(fit)[2] * x)))
 
 ---
 
-## Non-linear Data
+## Non-linear 
 
 <div class="rimage center"><img src="fig/unnamed-chunk-5-1.png" title="" alt="" class="plot" /></div>
 
@@ -298,4 +298,4 @@ $$
 \hat\beta_1 = Cor\left(Y,X\right) \frac{Sd\left(Y\right)}{Sd\left(X\right)}
 $$
 
-So, $R^2$ is literally $r$ squared
+So, $R^2$ is literally $r$ squared.

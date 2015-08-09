@@ -121,7 +121,7 @@ for (i in 1:n)
 
 ---
 
-## Non-linear Data
+## Non-linear 
 
 ```{r, echo=FALSE, fig.height=5, fig.width=5}
 x <- runif(100, -3, 3)
@@ -325,4 +325,4 @@ $$
 \hat\beta_1 = Cor\left(Y,X\right) \frac{Sd\left(Y\right)}{Sd\left(X\right)}
 $$
 
-So, $R^2$ is literally $r$ squared
+So, $R^2$ is literally $r$ squared.
