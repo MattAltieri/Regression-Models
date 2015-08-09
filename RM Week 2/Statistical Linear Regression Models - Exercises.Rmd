@@ -21,3 +21,108 @@ knit_hooks$set(inline = function(x) {
 })
 knit_hooks$set(plot = knitr:::hook_plot_html)
 ```
+
+## Question 1
+
+Fit a linear regression model to the `father.son` dataset with the father as the predictor and the son as the outcome. Give a $p$-value for the slope coefficient and perform the relevant hypothesis test.
+
+$$
+ht_{son} = \beta_0 + \beta_1 ht_{father} + \epsilon_i \\
+H_0 : \beta_1 = 0 \\
+H_\alpha : \beta_1 \ne 0
+$$
+
+```{r, Q1Ans}
+library(UsingR)
+data(father.son)
+fit <- lm(sheight ~ fheight, data=father.son)
+summary(fit)$coef
+```
+
+**ANSWER:** Our fit estimates $\beta_1$ as 0.514 with a very high $t$-value (19.006) and a very low $p$-value (almost 0). Therefore the null hypothesis is rejected.
+
+---
+
+## Question 2
+
+Refer to question 1. Interpret both parameters. Recenter for the intercept if necessary.
+
+```{r, Q2Ans}
+fit.c <- lm(sheight ~ I(fheight - mean(fheight)), data=father.son)
+summary(fit.c)$coef
+```
+
+**ANSWER:** The son's height for the average height of all fathers is 68.684. For every inch of father's height, we can predict 0.514 inches of the son's height.
+
+---
+
+## Question 3
+
+Refer to question 1. Predict the son's height if the father's height is 80 niches. Would you recommend this prediction? Why or why not?
+
+```{r, Q3Ans}
+predict(fit, newdata=data.frame(fheight=80))
+summary(father.son)
+```
+
+**ANSWER:** 75. This is not a reliable prediction, as the maximum heights in our sample set is lower than the value we're trying to predict. We have no estimate of variability at that height.
+
+---
+
+## Question 4
+
+Load the `mtcars` dataset. Fit a linear regression with miles per gallon as the outcome and horsepower as the predictor. Interpret your coefficients, recenter for the intercept if necessary.
+
+```{r, Q4Ans}
+data(mtcars)
+summary(lm(mpg ~ I(hp - mean(hp)), data=mtcars))$coef
+```
+
+**ANSWER:** The `mpg` for a car w/ average `hp` is 20.091. For every unit of gross horsepower, we predict a -0.068 decrease in miles per gallon. This result is highly significant, with a $p$-value of nearly 0.
+
+---
+
+## Question 5
+
+Refer to question 4. Overlay the fit onto a scatterplot.
+
+**ANSWER:** See plot.
+
+```{r, Q5Ans}
+library(ggplot2)
+ggplot(mtcars, aes(x=hp, y=mpg)) +
+    geom_point(cex=5, color="darkgreen", alpha=0.5) +
+    geom_smooth(method="lm", se=F, lwd=2)
+```
+
+---
+
+## Question 6
+
+Refer to question 4. Test they hypothesis of no linear relationship between horsepower and miles per gallon.
+
+$$
+mpg = \beta_0 + \beta_1 hp + \epsilon_i \\
+H_0 : \beta_1 = 0 \\
+H_\alpha : \beta_1 \ne 0
+$$
+
+```{r, Q6Ans}
+summary(lm(mpg ~ hp, data=mtcars))$coef
+```
+
+**ANSWER:** With a $\beta_1$ of -0.068 and a $p$-value of nearly 0, the null hypothesis of no linear relationship is rejected.
+
+---
+
+## Question 7
+
+Refer to question 4. Predict the miles per gallong for a horsepower of 111
+
+```{r, Q7Ans}
+summary(mtcars[,c("mpg","hp")])
+fit <- lm(mpg ~ hp, data=mtcars)
+predict(fit, newdata=data.frame(hp=111))
+```
+
+**ANSWER:** 22.526. Both the predicted mpg & the hp of 111 are reasonable values given our data.

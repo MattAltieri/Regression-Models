@@ -70,7 +70,108 @@ img {
 </div>
 
 
-
+<div id="question-1" class="section level2">
+<h2>Question 1</h2>
+<p>Fit a linear regression model to the <code>father.son</code> dataset with the father as the predictor and the son as the outcome. Give a <span class="math inline">\(p\)</span>-value for the slope coefficient and perform the relevant hypothesis test.</p>
+<p><span class="math display">\[
+ht_{son} = \beta_0 + \beta_1 ht_{father} + \epsilon_i \\
+H_0 : \beta_1 = 0 \\
+H_\alpha : \beta_1 \ne 0
+\]</span></p>
+<pre class="r"><code>library(UsingR)
+data(father.son)
+fit &lt;- lm(sheight ~ fheight, data=father.son)
+summary(fit)$coef</code></pre>
+<pre><code>             Estimate Std. Error  t value     Pr(&gt;|t|)
+(Intercept) 33.886604 1.83235382 18.49348 1.604044e-66
+fheight      0.514093 0.02704874 19.00618 1.121268e-69</code></pre>
+<p><strong>ANSWER:</strong> Our fit estimates <span class="math inline">\(\beta_1\)</span> as 0.514 with a very high <span class="math inline">\(t\)</span>-value (19.006) and a very low <span class="math inline">\(p\)</span>-value (almost 0). Therefore the null hypothesis is rejected.</p>
+<hr />
+</div>
+<div id="question-2" class="section level2">
+<h2>Question 2</h2>
+<p>Refer to question 1. Interpret both parameters. Recenter for the intercept if necessary.</p>
+<pre class="r"><code>fit.c &lt;- lm(sheight ~ I(fheight - mean(fheight)), data=father.son)
+summary(fit.c)$coef</code></pre>
+<pre><code>                            Estimate Std. Error   t value     Pr(&gt;|t|)
+(Intercept)                68.684070 0.07421078 925.52689 0.000000e+00
+I(fheight - mean(fheight))  0.514093 0.02704874  19.00618 1.121268e-69</code></pre>
+<p><strong>ANSWER:</strong> The son’s height for the average height of all fathers is 68.684. For every inch of father’s height, we can predict 0.514 inches of the son’s height.</p>
+<hr />
+</div>
+<div id="question-3" class="section level2">
+<h2>Question 3</h2>
+<p>Refer to question 1. Predict the son’s height if the father’s height is 80 niches. Would you recommend this prediction? Why or why not?</p>
+<pre class="r"><code>predict(fit, newdata=data.frame(fheight=80))</code></pre>
+<pre><code>       1 
+75.01405 </code></pre>
+<pre class="r"><code>summary(father.son)</code></pre>
+<pre><code>    fheight         sheight     
+ Min.   :59.01   Min.   :58.51  
+ 1st Qu.:65.79   1st Qu.:66.93  
+ Median :67.77   Median :68.62  
+ Mean   :67.69   Mean   :68.68  
+ 3rd Qu.:69.60   3rd Qu.:70.47  
+ Max.   :75.43   Max.   :78.36  </code></pre>
+<p><strong>ANSWER:</strong> 75. This is not a reliable prediction, as the maximum heights in our sample set is lower than the value we’re trying to predict. We have no estimate of variability at that height.</p>
+<hr />
+</div>
+<div id="question-4" class="section level2">
+<h2>Question 4</h2>
+<p>Load the <code>mtcars</code> dataset. Fit a linear regression with miles per gallon as the outcome and horsepower as the predictor. Interpret your coefficients, recenter for the intercept if necessary.</p>
+<pre class="r"><code>data(mtcars)
+summary(lm(mpg ~ I(hp - mean(hp)), data=mtcars))$coef</code></pre>
+<pre><code>                    Estimate Std. Error   t value     Pr(&gt;|t|)
+(Intercept)      20.09062500  0.6828817 29.420360 1.101810e-23
+I(hp - mean(hp)) -0.06822828  0.0101193 -6.742389 1.787835e-07</code></pre>
+<p><strong>ANSWER:</strong> The <code>mpg</code> for a car w/ average <code>hp</code> is 20.091. For every unit of gross horsepower, we predict a -0.068 decrease in miles per gallon. This result is highly significant, with a <span class="math inline">\(p\)</span>-value of nearly 0.</p>
+<hr />
+</div>
+<div id="question-5" class="section level2">
+<h2>Question 5</h2>
+<p>Refer to question 4. Overlay the fit onto a scatterplot.</p>
+<p><strong>ANSWER:</strong> See plot.</p>
+<pre class="r"><code>library(ggplot2)
+ggplot(mtcars, aes(x=hp, y=mpg)) +
+    geom_point(cex=5, color=&quot;darkgreen&quot;, alpha=0.5) +
+    geom_smooth(method=&quot;lm&quot;, se=F, lwd=2)</code></pre>
+<div class="rimage center">
+<img src="data:image/png;base64,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" title alt class="plot" />
+</div>
+<hr />
+</div>
+<div id="question-6" class="section level2">
+<h2>Question 6</h2>
+<p>Refer to question 4. Test they hypothesis of no linear relationship between horsepower and miles per gallon.</p>
+<p><span class="math display">\[
+mpg = \beta_0 + \beta_1 hp + \epsilon_i \\
+H_0 : \beta_1 = 0 \\
+H_\alpha : \beta_1 \ne 0
+\]</span></p>
+<pre class="r"><code>summary(lm(mpg ~ hp, data=mtcars))$coef</code></pre>
+<pre><code>               Estimate Std. Error   t value     Pr(&gt;|t|)
+(Intercept) 30.09886054  1.6339210 18.421246 6.642736e-18
+hp          -0.06822828  0.0101193 -6.742389 1.787835e-07</code></pre>
+<p><strong>ANSWER:</strong> With a <span class="math inline">\(\beta_1\)</span> of -0.068 and a <span class="math inline">\(p\)</span>-value of nearly 0, the null hypothesis of no linear relationship is rejected.</p>
+<hr />
+</div>
+<div id="question-7" class="section level2">
+<h2>Question 7</h2>
+<p>Refer to question 4. Predict the miles per gallong for a horsepower of 111</p>
+<pre class="r"><code>summary(mtcars[,c(&quot;mpg&quot;,&quot;hp&quot;)])</code></pre>
+<pre><code>      mpg              hp       
+ Min.   :10.40   Min.   : 52.0  
+ 1st Qu.:15.43   1st Qu.: 96.5  
+ Median :19.20   Median :123.0  
+ Mean   :20.09   Mean   :146.7  
+ 3rd Qu.:22.80   3rd Qu.:180.0  
+ Max.   :33.90   Max.   :335.0  </code></pre>
+<pre class="r"><code>fit &lt;- lm(mpg ~ hp, data=mtcars)
+predict(fit, newdata=data.frame(hp=111))</code></pre>
+<pre><code>       1 
+22.52552 </code></pre>
+<p><strong>ANSWER:</strong> 22.526. Both the predicted mpg &amp; the hp of 111 are reasonable values given our data.</p>
+</div>
 
 
 </div>
