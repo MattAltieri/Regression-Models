@@ -84,6 +84,123 @@ Y_i = \beta_0 + \beta_1 X_i + \epsilon_i
 </ul>
 <hr />
 </div>
+<div id="review" class="section level2">
+<h2>Review</h2>
+<ul>
+<li>Statistics like <span class="math inline">\(\frac{\hat\theta - \theta}{\hat\sigma_{\hat\theta}}\)</span> often have the following properties
+<ol style="list-style-type: decimal">
+<li>Is normally distributed and has a finite sample Student’s T distribution if the variance is replaced with a sample estimate (under normality assumptions)</li>
+<li>Can be used to test <span class="math inline">\(H_0 : \theta = \theta_0\)</span> versus <span class="math inline">\(H_\alpha : \theta &gt;,&lt;,\ne \theta_0\)</span></li>
+<li>Can be used to create a confidence interval for <span class="math inline">\(\theta\)</span> via <span class="math inline">\(\hat\theta \pm Q_{1-\alpha/2} \hat\sigma_{\hat\theta}\)</span> where <span class="math inline">\(Q_{1-\alpha/2}\)</span> is the relevant quantile from either a normal or <span class="math inline">\(t\)</span> distribution</li>
+</ol></li>
+<li>In the case of regression with iid sampling assumptions and normal errors, our inferences will follow very similarily to what you saw in your inference class</li>
+<li>We won’t cover asymptotics for regression analysis, but suffice it to say that under assumptions on the ways in which the <span class="math inline">\(X\)</span> values are collected, the iid sampling model, and mean model, the normal results hold to create intervals and confidence intervals</li>
+</ul>
+<hr />
+</div>
+<div id="results" class="section level2">
+<h2>Results</h2>
+<ul>
+<li><span class="math inline">\(\sigma_{\hat\beta_1}^2 = Var\left(\hat\beta_1\right) = \sigma^2 / \sum_{i=1}^2\left(X_i - \bar X\right)^2\)</span></li>
+<li><span class="math inline">\(\sigma_{\hat\beta_0}^2 = Var\left(\hat\beta_0\right) = \left(\frac{1}{n} + \frac{X^{-2}}{\sum_{i=1}^n\left(X_i - \bar X\right)}\right) \sigma^2\)</span></li>
+<li>In practice, <span class="math inline">\(\sigma\)</span> is replaced by its estimate</li>
+<li>It’s probably not surprising that under iid Gaussian errors <span class="math display">\[
+\frac{\hat\beta_j - \beta_j}{\hat\sigma_{\hat\beta_j}}
+\]</span> follows a <span class="math inline">\(t\)</span> distribution with <span class="math inline">\(n - 2\)</span> degrees of freedom and a normal distribution for large <span class="math inline">\(n\)</span></li>
+<li>This can be used to create confidence intervals and perform hypothesis tests</li>
+</ul>
+<hr />
+</div>
+<div id="example-diamond-dataset" class="section level2">
+<h2>Example Diamond Dataset</h2>
+<pre class="r"><code>library(UsingR)
+data(diamond)
+y &lt;- diamond$price
+x &lt;- diamond$carat
+n &lt;- length(y)
+beta1 &lt;- cor(y,x) * sd(y)/sd(x)
+beta0 &lt;- mean(y) - beta1 * mean(x)
+e &lt;- y - beta0 - beta1 * x
+sigma &lt;- sqrt(sum(e^2) / (n-2))
+ssx &lt;- sum((x - mean(x))^2)
+seBeta0 &lt;- (1 / n + mean(x)^2 / ssx) ^ .5 * sigma
+seBeta1 &lt;- sigma / sqrt(ssx)
+tBeta0 &lt;- beta0 / seBeta0
+tBeta1 &lt;- beta1 / seBeta1
+pBeta0 &lt;- 2 * pt(abs(tBeta0), df=n - 2, lower.tail=F)
+pBeta1 &lt;- 2 * pt(abs(tBeta1), df=n - 2, lower.tail=F)
+coefTable &lt;- rbind(c(beta0, seBeta0, tBeta0, pBeta0),
+                   c(beta1, seBeta1, tBeta1, pBeta1))
+colnames(coefTable) &lt;- c(&quot;Estimate&quot;, &quot;Std. Error&quot;, &quot;t value&quot;, &quot;P(&gt;|t|)&quot;)
+rownames(coefTable) &lt;- c(&quot;(Intercept)&quot;, &quot;x&quot;)
+coefTable</code></pre>
+<pre><code>             Estimate Std. Error   t value      P(&gt;|t|)
+(Intercept) -259.6259   17.31886 -14.99094 2.523271e-19
+x           3721.0249   81.78588  45.49715 6.751260e-40</code></pre>
+<pre class="r"><code>fit &lt;- lm(y ~ x)
+summary(fit)$coefficients</code></pre>
+<pre><code>             Estimate Std. Error   t value     Pr(&gt;|t|)
+(Intercept) -259.6259   17.31886 -14.99094 2.523271e-19
+x           3721.0249   81.78588  45.49715 6.751260e-40</code></pre>
+<hr />
+</div>
+<div id="getting-a-confidence-interval" class="section level2">
+<h2>Getting a Confidence Interval</h2>
+<pre class="r"><code>sumCoef &lt;- summary(fit)$coefficients
+sumCoef[1,1] + c(-1,1) * qt(.975, df=fit$df) * sumCoef[1,2]</code></pre>
+<pre><code>[1] -294.4870 -224.7649</code></pre>
+<pre class="r"><code>(sumCoef[2,1] + c(-1,1) * qt(.975, df=fit$df) * sumCoef[2,2]) / 10</code></pre>
+<pre><code>[1] 355.6398 388.5651</code></pre>
+<p>With 95% confidence, we estimate that a 0.1 carat increase in diamond size results in a 355.6 to 388.6 increase in (Singapore) dollars</p>
+<hr />
+</div>
+<div id="prediction-of-outcomes" class="section level2">
+<h2>Prediction of Outcomes</h2>
+<ul>
+<li>Consider predicting <span class="math inline">\(Y\)</span> at a value of <span class="math inline">\(X\)</span>
+<ul>
+<li>Predicting the price of a diamond given a carat</li>
+<li>Predicting the height of a child given the height of the parents</li>
+</ul></li>
+<li>The obvious estimate for prediction at point <span class="math inline">\(x_0\)</span> is <span class="math display">\[
+\hat\beta_0 + \hat\beta_1 x_0
+\]</span></li>
+<li>A standard error is needed to create a prediction interval</li>
+<li>There’s a distinction between intervals for the regression line at point <span class="math inline">\(x_0\)</span> and the prediction of what a <span class="math inline">\(y\)</span> would be at point <span class="math inline">\(x_0\)</span></li>
+<li>Line at <span class="math inline">\(x_0\)</span> se, <span class="math inline">\(\hat\sigma \sqrt{\frac{1}{n} + \frac{\left(x_0 - \bar X\right)^2}{\sum_{i=1}^n \left(X_i - \bar X\right)^2}}\)</span></li>
+<li>Prediction interval se at <span class="math inline">\(x_0\)</span>, <span class="math inline">\(\hat\sigma \sqrt{1 + \frac{1}{n} + \frac{\left(x_0 - \bar X\right)^2}{\sum_{i=1}^n \left(X_i - \bar X\right)^2}}\)</span></li>
+</ul>
+<hr />
+</div>
+<div id="plotting-the-prediction-intervals" class="section level2">
+<h2>Plotting the Prediction Intervals</h2>
+<div class="rimage center">
+<img src="data:image/png;base64,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" title alt class="plot" />
+</div>
+<hr />
+</div>
+<div id="discussion" class="section level2">
+<h2>Discussion</h2>
+<ul>
+<li>Both intervals have varying widths
+<ul>
+<li>Least width at the means of the <span class="math inline">\(x\)</span>s</li>
+</ul></li>
+<li>We are quite confident in the regression line, so that interval is very narrow
+<ul>
+<li>If we knew <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> this interval would have zero width</li>
+</ul></li>
+<li>The prediction interval must incorporate the variability in the data around the line
+<ul>
+<li>Even if we knew <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> this interval would still have width</li>
+</ul></li>
+</ul>
+<hr />
+</div>
+<div id="in-r" class="section level2">
+<h2>In R</h2>
+<p>This content is missing from the available slides</p>
+</div>
 
 
 </div>
