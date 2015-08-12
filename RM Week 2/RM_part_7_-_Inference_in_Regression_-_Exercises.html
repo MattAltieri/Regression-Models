@@ -70,7 +70,126 @@ img {
 </div>
 
 
-
+<div id="question-1" class="section level2">
+<h2>Question 1</h2>
+<p>Test whether the slope coefficient for the father.son data is different from zero (father as predictor, son as outcome)</p>
+<p><span class="math display">\[
+H_0 : \hat\beta_1 = 0 \\
+H_\alpha : \hat\beta_1 \ne 0
+\]</span></p>
+<pre class="r"><code>library(UsingR)
+data(father.son)
+y &lt;- father.son$sheight
+x &lt;- father.son$fheight
+fs.fit &lt;- lm(y ~ x)
+fs.coef &lt;- summary(fs.fit)$coefficients
+fs.coef</code></pre>
+<pre><code>             Estimate Std. Error  t value     Pr(&gt;|t|)
+(Intercept) 33.886604 1.83235382 18.49348 1.604044e-66
+x            0.514093 0.02704874 19.00618 1.121268e-69</code></pre>
+<p><strong>ANSWER:</strong> <span class="math inline">\(\hat\beta_1\)</span> is 0.514, with a <span class="math inline">\(p\)</span>-value of 0. Therefore we reject the null hypothesis</p>
+<hr />
+</div>
+<div id="question-2" class="section level2">
+<h2>Question 2</h2>
+<p>Refer to question 1. Form a confidence interval for the slope coefficient.</p>
+<pre class="r"><code>confint(fs.fit)[2,]</code></pre>
+<pre><code>    2.5 %    97.5 % 
+0.4610188 0.5671673 </code></pre>
+<p><strong>ANSWER:</strong> CI at 95% confidence is 0.461 to 0.567</p>
+<hr />
+</div>
+<div id="question-3" class="section level2">
+<h2>Question 3</h2>
+<p>Refer to question 1. Form a confidence interval for the intercept (center the father’s height first to get an intercept that is easier to interpret)</p>
+<pre class="r"><code>fs.fit.c &lt;- lm(y ~ I(x - mean(x)))
+confint(fs.fit.c)[1,]</code></pre>
+<pre><code>   2.5 %   97.5 % 
+68.53846 68.82968 </code></pre>
+<p><strong>ANSWER:</strong> The son’s height around the mean father’s height has a CI at 95% confidence of 68.538 to 68.830</p>
+<hr />
+</div>
+<div id="question-4" class="section level2">
+<h2>Question 4</h2>
+<p>Refer to question 1. Form a mean value interval for the expected son’s height at the average father’s height.</p>
+<pre class="r"><code>predict(fs.fit, newdata=data.frame(x=mean(x)), interval=&quot;confidence&quot;)</code></pre>
+<pre><code>       fit      lwr      upr
+1 68.68407 68.53846 68.82968</code></pre>
+<p><strong>ANSWER:</strong> 68.684 w/ CI at 95% of 68.538 to 68.830</p>
+<hr />
+</div>
+<div id="question-5" class="section level2">
+<h2>Question 5</h2>
+<p>Refer to question 1. Form a prediction interval for the son’s height at the average father’s height.</p>
+<pre class="r"><code>predict(fs.fit, newdata=data.frame(x=mean(x)), interval=&quot;prediction&quot;)</code></pre>
+<pre><code>       fit      lwr      upr
+1 68.68407 63.90091 73.46723</code></pre>
+<p><strong>ANSWER:</strong> 68.684 w/ CI at 95% of 63.901 and 73.467</p>
+<hr />
+</div>
+<div id="question-6" class="section level2">
+<h2>Question 6</h2>
+<p>Load the <code>mtcars</code> dataset. Fit a linear regression with miles per gallong as the outcome and horsepower as the predictor. Test whether or not the horsepower coefficient is statistically different from zero. Interpret your test.</p>
+<p><span class="math display">\[
+H_0 : \hat\beta_1 = 0 \\
+H_\alpha : \hat\beta_1 \ne 0
+\]</span></p>
+<pre class="r"><code>data(mtcars)
+y &lt;- mtcars$mpg
+x &lt;- mtcars$hp
+cars.fit &lt;- lm(y ~ x)
+summary(cars.fit)$coefficients</code></pre>
+<pre><code>               Estimate Std. Error   t value     Pr(&gt;|t|)
+(Intercept) 30.09886054  1.6339210 18.421246 6.642736e-18
+x           -0.06822828  0.0101193 -6.742389 1.787835e-07</code></pre>
+<p><strong>ANSWER:</strong> <span class="math inline">\(\hat\beta_1\)</span> is -0.068, with a <span class="math inline">\(p\)</span>-value of 0. Therefore we reject the null hypothesis.</p>
+<hr />
+</div>
+<div id="question-7" class="section level2">
+<h2>Question 7</h2>
+<p>Refer to question 6. Form a confidence interval for the slope coefficient.</p>
+<pre class="r"><code>confint(cars.fit)[2,]</code></pre>
+<pre><code>      2.5 %      97.5 % 
+-0.08889465 -0.04756190 </code></pre>
+<p><strong>ANSWER:</strong> Slope CI at 95% is -0.089 to -0.048</p>
+<hr />
+</div>
+<div id="question-8" class="section level2">
+<h2>Question 8</h2>
+<p>Refer to question 6. Form a confidence interval for the intercept (center the HP variable first)</p>
+<pre class="r"><code>cars.fit.c &lt;- lm(y ~ I(x - mean(x)))
+confint(cars.fit.c)[1,]</code></pre>
+<pre><code>   2.5 %   97.5 % 
+18.69599 21.48526 </code></pre>
+<p><strong>ANSWER:</strong> (Centered) Intercept CI at 95% is 18.696 to 21.485.</p>
+<hr />
+</div>
+<div id="question-9" class="section level2">
+<h2>Question 9</h2>
+<p>Refer to question 6. Form a mean value interval for the expected MPG for the average HP.</p>
+<pre class="r"><code>predict(cars.fit, newdata=data.frame(x=mean(x)), interval=&quot;confidence&quot;)</code></pre>
+<pre><code>       fit      lwr      upr
+1 20.09062 18.69599 21.48526</code></pre>
+<p><strong>ANSWER:</strong> 20.091 w/ CI at 95% of 18.696 to 21.485</p>
+<hr />
+</div>
+<div id="question-10" class="section level2">
+<h2>Question 10</h2>
+<p>Refer to question 6. Form a prediction interval for the expected MPG for the average HP.</p>
+<pre class="r"><code>predict(cars.fit, newdata=data.frame(x=mean(x)), interval=&quot;prediction&quot;)</code></pre>
+<pre><code>       fit      lwr      upr
+1 20.09062 12.07908 28.10217</code></pre>
+<p><strong>ANSWER:</strong> 20.091 w/ CI at 95% of 12.079 to 28.102.</p>
+<hr />
+</div>
+<div id="question-11" class="section level2">
+<h2>Question 11</h2>
+<p>Refer to question 6. Create a plot that has the fitted regression line plus curves at the expected values and prediction interval.</p>
+<p><strong>ANSWER:</strong> See plot</p>
+<div class="rimage center">
+<img src="data:image/png;base64,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" title alt class="plot" />
+</div>
+</div>
 
 
 </div>
