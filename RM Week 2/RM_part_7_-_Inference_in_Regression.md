@@ -143,7 +143,3 @@ $$
     - Even if we knew $\beta_0$ and $\beta_1$ this interval would still have width
 
 ---
-
-## In R
-
-This content is missing from the available slides
