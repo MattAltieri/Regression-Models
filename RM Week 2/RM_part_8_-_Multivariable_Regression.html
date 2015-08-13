@@ -70,7 +70,170 @@ img {
 </div>
 
 
-
+<div id="multivariable-regression-analyses" class="section level2">
+<h2>Multivariable Regression Analyses</h2>
+<ul>
+<li>If I were to present evidence of a relationship between breath mint usage (mints per day, <span class="math inline">\(X\)</span>) and pulmonary function (measured in FEV), you would be skeptical
+<ul>
+<li>Likely, you would say “smokers tend to use more breath mints than non-smokers, smoking is related to a loss in pulmonary function. That’s probably the culprit”</li>
+<li>If asked what would convince you, you would likely say, “If non-smoking breath mint users had lower lung function than non-smoking non-breath mint users and, similarly, if smoking breath mint users had lower lung function than smoking non-breath mint users, I’d be more inclined to believe you”</li>
+</ul></li>
+<li>In other words, to even consider my results, I would have to demonstrate that they hold while holding smoking status fixed.</li>
+</ul>
+<hr />
+</div>
+<div id="multivariable-regression-analyses-1" class="section level2">
+<h2>Multivariable Regression Analyses</h2>
+<ul>
+<li>An insurance company is interested in how last year’s claims can predict a person’s time in the hospital this year
+<ul>
+<li>They want to use an enormous amount of data contained in claims to predict a single number. Simple linear regression is not equipped to handle more than one predictor</li>
+</ul></li>
+<li>How can one generalize SLR to incorporate lots of regressors for the purpose of prediction?</li>
+<li>What are the consequences of adding lots of regressors?
+<ul>
+<li>Surely there must be consequences to throwing variables in that aren’t related to <span class="math inline">\(Y\)</span>?</li>
+<li>Surely there must be consequences to omitting variables that are?</li>
+</ul></li>
+</ul>
+<hr />
+</div>
+<div id="the-linear-model" class="section level2">
+<h2>The Linear Model</h2>
+<ul>
+<li>The general linear model extends simple linear regression (SLR) by adding terms linearly into the model <span class="math display">\[
+\begin{eqnarray*}
+Y_I &amp; = &amp; \beta_1 X_{1i} + \beta_2 X_{2i} + ... + \beta_p X_{pi} + \epsilon_i \\
+&amp; = &amp; \sum_{i=1}^n X_{ik} \beta_j + \epsilon_i
+\end{eqnarray*}
+\]</span></li>
+<li>Here <span class="math inline">\(X_{1i} = 1\)</span> typically, so that an intercept is included</li>
+<li>Least squares (and hence ML estimates under iid Gaussianity of the errors) minimizes <span class="math display">\[
+\sum_{i=1}^n\left(Y_i - \sum_{k=1}^p X_{ki} \beta_j\right)^2
+\]</span></li>
+<li>Note, the important linearity is linearity in the coefficients. Thus <span class="math display">\[
+Y_i = \beta_1 X_{1i}^2 + \beta_2 X_{2i}^2 + ... + \beta_p X_{pi}^2 + \epsilon_i
+\]</span> is still a linear model. We’ve just squared the eliments of the predictor variables</li>
+</ul>
+<hr />
+</div>
+<div id="how-to-get-estimates" class="section level2">
+<h2>How to Get Estimates</h2>
+<ul>
+<li>Recall that the LS estimate for regression through the origin, <span class="math inline">\(E\left[Y_i\right] = X_{1i} \beta_1\)</span>, was <span class="math inline">\(\sum_{i=1}^n X_i Y_i / \sum_{i=1}^n X_i^2\)</span></li>
+<li>Let’s consider two regressors, <span class="math inline">\(E\left[Y_i\right] = X_{1i} \beta_1 + X_{2i} \beta_2 = \mu_i\)</span></li>
+<li>Least squares tries to minimize <span class="math display">\[
+\sum_{i=1}^n\left(Y_i - X_{1i}\beta_1 - X_{2i}\beta_2\right)^2
+\]</span></li>
+</ul>
+<hr />
+</div>
+<div id="result" class="section level2">
+<h2>Result</h2>
+<p><span class="math display">\[
+\hat\beta_1 = \frac{\sum_{i=1}^n e_{i,Y|X_2} e_{i,X_1|X_2}}{\sum_{i=1}^n e_{i,X_1|X_2}^2}
+\]</span></p>
+<ul>
+<li>That is, the regeression estimate for <span class="math inline">\(\beta_1\)</span> is the regression through the origin estimate having regressed <span class="math inline">\(X_2\)</span> out of both the response and the predictor</li>
+<li>Similarly, the regression estimate for <span class="math inline">\(\beta_2\)</span> is the regression through the origin estimate having regressed <span class="math inline">\(X_1\)</span> out of both the response and the predictor</li>
+<li>More generally, multivariate regression estimates are exactly those having removed the linear relationship of the other variables from both the regressor and response</li>
+</ul>
+<hr />
+</div>
+<div id="example-with-two-variables-simple-linear-regression" class="section level2">
+<h2>Example with Two Variables, Simple Linear Regression</h2>
+<ul>
+<li><span class="math inline">\(Y_i = \beta_1 X_{1i} + \beta_2 X_{2i}\)</span> where <span class="math inline">\(X_{2i} = 1\)</span> is an intercept term</li>
+<li>Notice the fitted coefficient of <span class="math inline">\(X_{2i}\)</span> on <span class="math inline">\(Y_i\)</span> is <span class="math inline">\(\bar Y\)</span>
+<ul>
+<li>The residuals <span class="math inline">\(e_{i,Y|X_2} = Y_i - \bar Y\)</span></li>
+</ul></li>
+<li>Notice the fitted coefficients of <span class="math inline">\(X_{2i}\)</span> on <span class="math inline">\(X_{1i}\)</span> is <span class="math inline">\(\bar X_1\)</span>
+<ul>
+<li>The residuals <span class="math inline">\(e_{i,Y|X_2} = X_{1i} - \bar X_1\)</span></li>
+</ul></li>
+<li>Thus <span class="math display">\[
+\begin{eqnarray*}
+\hat\beta_1 \
+&amp; = &amp; \frac{\sum_{i=1}^n e_{i,Y|X_2} e_{i,X_1|X_2}}{\sum_{i=1}^n e_{i,X_1|X_2}^2} \\
+&amp; = &amp; \frac{\sum_{i=1}^n\left(X_i - \bar X\right)\left(Y_i - \bar Y\right)}{\sum_{i=1}^n \left(X_i - \bar X\right)^2} \\
+&amp; = &amp; Cor\left(X,Y\right) \frac{Sd\left(Y\right)}{Sd\left(X\right)}
+\end{eqnarray*}
+\]</span></li>
+</ul>
+<hr />
+</div>
+<div id="the-general-case" class="section level2">
+<h2>The General Case</h2>
+<ul>
+<li>Least squares solutions have to minimize <span class="math display">\[
+\sum_{i=1}^n \left(Y_i - X_{1i}\beta_1 - ... - X_{pi}\beta_p\right)^2
+\]</span></li>
+<li>The least squares estimate for the coefficient of a multivariate regression model is exactly regression through the origin with the linear relationships with other regressors removed from both the regressor and outcome by taking residuals</li>
+<li>In this sense, multivariate regression “adjusts” a coefficient for the linear impact of the other variables</li>
+</ul>
+<hr />
+</div>
+<div id="demonstration-that-it-works-using-an-example" class="section level2">
+<h2>Demonstration That It Works Using an Example</h2>
+<div id="linear-model-with-two-variables" class="section level6">
+<h6>Linear model with two variables</h6>
+<pre class="r"><code>n &lt;- 100
+x &lt;- rnorm(n)
+x2 &lt;- rnorm(n)
+x3 &lt;- rnorm(n)
+y &lt;- 1 + x + x2 + x3 + rnorm(n, sd=.1)
+ey &lt;- resid(lm(y ~ x2 + x3))
+ex &lt;- resid(lm(x ~ x2 + x3))
+sum(ey * ex) / sum(ex^2)</code></pre>
+<pre><code>[1] 1.001075</code></pre>
+<pre class="r"><code>coef(lm(ey ~ ex - 1))</code></pre>
+<pre><code>      ex 
+1.001075 </code></pre>
+<hr />
+</div>
+</div>
+<div id="interpretation-of-the-coefficients" class="section level2">
+<h2>Interpretation of the Coefficients</h2>
+<p><span class="math display">\[
+E\left[Y ~|~ X_1 = x_1,...,X_p = x_p\right] = \sum_{k=1}^p x_k\beta_k \\
+E\left[Y ~|~ X_1 = x_1 + 1,...,X_p = x_p\right] = \left(X_1 + 1\right)\beta_1 + \sum_{k=2}^p x_k\beta_k \\
+E\left[Y ~|~ X_1 = x_1 + 1,...,X_p = x_p\right] - E\left[Y ~|~ X_i = x_i,...,X_p = x_p\right] \\
+= \left(x_1 + 1\right)\beta_1 + \sum_{k=2}^p x_k\beta_k + \sum_{k=1}^p x_k\beta_k = \beta_1
+\]</span></p>
+<p>So that the interpretation of a multivariable regression coefficient is the expected change in the response per unit change in the regressor, holding all of the other regressors fixed</p>
+<p>In the next lecture, we’ll do examples and go over context-specific interpretations</p>
+<hr />
+</div>
+<div id="fitted-values-residuals-and-residual-variation" class="section level2">
+<h2>Fitted values, Residuals, and Residual Variation</h2>
+<p>All of our SLR quantities can be extended to linear models</p>
+<ul>
+<li>Model <span class="math inline">\(Y_i = \sum_{k=1}^p X_{ik}\beta_k + \epsilon_i\)</span> where <span class="math inline">\(\epsilon_i \sim N\left(0,\sigma^2\right)\)</span></li>
+<li>Fitted response <span class="math inline">\(\hat Y_i = \sum_{k=1}^p X_{ik}\hat\beta_k\)</span></li>
+<li>Residuals <span class="math inline">\(e_i = Y_i - \hat Y_i\)</span></li>
+<li>Variance estimate <span class="math inline">\(\hat\sigma^2 = \frac{1}{n - p}\sum_{i=1}^n e_i^2\)</span></li>
+<li>To get predicted responses at new values, <span class="math inline">\(x_1,...,x_p\)</span>, simply plug them into the linear model <span class="math inline">\(\sum_{k=1}^p x_k\hat\beta_k\)</span></li>
+<li>Coefficients have standard errors, <span class="math inline">\(\hat\sigma_{\hat\beta_k}\)</span>, and <span class="math inline">\(\frac{\hat\beta_k - \beta_k}{\hat\sigma_{\hat\beta_k}}\)</span> follows a <span class="math inline">\(t\)</span> distribution with <span class="math inline">\(n - p\)</span> degrees of freedom</li>
+<li>Predicted responses have standard errors and we can calculate predicted and expected response intervals</li>
+</ul>
+<hr />
+</div>
+<div id="linear-models" class="section level2">
+<h2>Linear Models</h2>
+<ul>
+<li>Linear models are the single most important applied statistical and machine learning technique, <em>by far</em></li>
+<li>Some amazing things that you can accomplish with linear models
+<ul>
+<li>Decompose a signal into its harmonics</li>
+<li>Flexibly fit complicated functions</li>
+<li>Fit factor variables as predictors</li>
+<li>Uncover complex multivariate relationships with the response</li>
+<li>Build accurate prediction models</li>
+</ul></li>
+</ul>
+<hr />
+</div>
 
 
 </div>
