@@ -168,3 +168,15 @@ All of our SLR quantities can be extended to linear models
     - Build accurate prediction models
     
 ---
+
+## Very Unclear Walkthrough of How Multivariate Regression Works
+
+$$
+\sum_{i=1}^n \left(Y_i - \beta_1 X_{1i} - \beta_2 X_{2i}\right)^2 \\
+\mbox{Let } \tilde Y_i = Y_i - \beta_1 X_{1i} \\
+\therefore \sum_{i=1}^n \left(\tilde Y_i - \beta_2 X_{2i}\right)^2 \\
+\beta_2 = \frac{\sum_{i=1}^n \tilde Y_i X_{2i}}{\sum_{i=1}^n X_{2i}^2} \\
+\beta_2 = \frac{\sum_{i=1}^n \left(Y_i - \beta_1 X_{1i}\right) X_{2i}}{\sum_{i=1}^n X_{2i}^2} \\
+\sum_{i=1}^n \left(Y_i - \beta_1 X_{1i} - \frac{\sum_{i=1}^n \left(Y_i - \beta_1 X_{1i}\right) X_{2i}}{\sum_{i=1}^n X_{2i}^2} X_{2i}\right)^2\\
+\hat\beta_1 = \frac{\sum_{i=1}^n e_{i,Y|X_2} e_{i,X_1|X_2}}{\sum_{i=1}^n e_{i,X_1|X_2}^2}
+$$
