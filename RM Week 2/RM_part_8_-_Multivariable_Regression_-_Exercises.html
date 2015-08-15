@@ -70,7 +70,83 @@ img {
 </div>
 
 
-
+<div id="question-1" class="section level2">
+<h2>Question 1</h2>
+<p>Load the dataset <code>Seatbelts</code> as part of the <code>datasets</code> package via <code>data(Seatbelts)</code>. Use <code>as.data.frame</code> to convert the object into a dataframe. Fit a linear model of driver deaths with <code>kms</code> and <code>PetrolPrice</code> as predictors. Interpret your results.</p>
+<pre class="r"><code>library(datasets)
+data(Seatbelts)
+sb &lt;- as.data.frame(Seatbelts)
+fit &lt;- lm(DriversKilled ~ kms + PetrolPrice, sb)
+round(summary(fit)$coef, 4)</code></pre>
+<pre><code>             Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)  215.7461    14.6656 14.7110   0.0000
+kms           -0.0017     0.0006 -2.8469   0.0049
+PetrolPrice -643.7895   148.2896 -4.3414   0.0000</code></pre>
+<pre class="r"><code># Numbers need to be centered and maybe scaled
+summary(sb$kms)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   7685   12680   14990   14990   17200   21630 </code></pre>
+<pre class="r"><code>summary(sb$PetrolPrice)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+0.08118 0.09258 0.10450 0.10360 0.11410 0.13300 </code></pre>
+<pre class="r"><code>library(dplyr)
+sb &lt;- mutate(sb,
+             pp=(PetrolPrice - mean(PetrolPrice)) / sd(PetrolPrice),
+             mm=kms/1000,
+             mmc=mm - mean(mm))
+fit2 &lt;- lm(DriversKilled ~ pp + mmc, sb)
+round(summary(fit2)$coef, 4)</code></pre>
+<pre><code>            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept) 122.8021     1.6629 73.8503   0.0000
+pp           -7.8387     1.8055 -4.3414   0.0000
+mmc          -1.7495     0.6145 -2.8469   0.0049</code></pre>
+<p><strong>ANSWER:</strong> There are on average 123 drivers killed for the average gas price &amp; distance driven. for every 1 standard deviation increase in gas price, we expect 7 to 8 fewer deaths when holding the distance traveled constant. For every 1000 km driven (holding gas prices constant). All results are significant w/ 95% confidence.</p>
+<hr />
+</div>
+<div id="question-2" class="section level2">
+<h2>Question 2</h2>
+<p>Predict the number of driver deaths at the average <code>kms</code> and <code>PetrolPrice</code> levels.</p>
+<pre class="r"><code>fit &lt;- lm(DriversKilled ~ kms + PetrolPrice, sb)
+predict(fit, newdata=data.frame(kms=mean(sb$kms), PetrolPrice=mean(sb$PetrolPrice)))</code></pre>
+<pre><code>       1 
+122.8021 </code></pre>
+<p><strong>ANSWER:</strong> We predict 122 - 123 driver deaths at the average <code>kms</code> and <code>PetrolPrice</code>.</p>
+<hr />
+</div>
+<div id="question-3" class="section level2">
+<h2>Question 3</h2>
+<p>Take the residual for DriversKilled having regressed out <code>kms</code> and an intercept and the residual for <code>PetrolPrice</code> having regressed out <code>kms</code> and an intercept. Fit a regression through the origin of the two residuals and show that it is the same as your coefficient obtained in question 1</p>
+<pre class="r"><code>fitFull &lt;- lm(DriversKilled ~ kms + PetrolPrice, sb)
+sb$edk &lt;- resid(lm(DriversKilled ~ kms, sb))
+sb$epp &lt;- resid(lm(PetrolPrice ~ kms, sb))
+fitResid &lt;- lm(edk ~ epp - 1, sb)
+round(summary(fitFull)$coef, 4)</code></pre>
+<pre><code>             Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)  215.7461    14.6656 14.7110   0.0000
+kms           -0.0017     0.0006 -2.8469   0.0049
+PetrolPrice -643.7895   148.2896 -4.3414   0.0000</code></pre>
+<pre class="r"><code>round(summary(fitResid)$coef, 4)</code></pre>
+<pre><code>     Estimate Std. Error t value Pr(&gt;|t|)
+epp -643.7895   147.5111 -4.3643        0</code></pre>
+<p><strong>ANSWER:</strong> The coefficients are the same (-643.7895) with some (expected) rounding error.</p>
+<hr />
+</div>
+<div id="question-4" class="section level2">
+<h2>Question 4</h2>
+<p>Take the residual for <code>DriversKilled</code> having regressed out <code>PetrolPrice</code> and an intercept. Take the residual for <code>kms</code> having regressed out <code>PetrolPrice</code> and an intercept. Fit a regression through the origin of the two residuals and show that it is the same as your coefficient obtained in question 1.</p>
+<pre class="r"><code>sb$edk &lt;- resid(lm(DriversKilled ~ PetrolPrice, sb))
+sb$ekms &lt;- resid(lm(kms ~ PetrolPrice, sb))
+fitResid &lt;- lm(edk ~ ekms - 1, sb)
+round(summary(fitFull)$coef, 4)</code></pre>
+<pre><code>             Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)  215.7461    14.6656 14.7110   0.0000
+kms           -0.0017     0.0006 -2.8469   0.0049
+PetrolPrice -643.7895   148.2896 -4.3414   0.0000</code></pre>
+<pre class="r"><code>round(summary(fitResid)$coef, 4)</code></pre>
+<pre><code>     Estimate Std. Error t value Pr(&gt;|t|)
+ekms  -0.0017      6e-04 -2.8619   0.0047</code></pre>
+<p><strong>ANSWER:</strong> The coefficients are the same (-0.0017) with some (expected) rounding error.</p>
+</div>
 
 
 </div>

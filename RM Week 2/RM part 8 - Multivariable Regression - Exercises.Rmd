@@ -20,3 +20,73 @@ knit_hooks$set(inline=function(x) {
 })
 knit_hooks$set(plot=knitr:::hook_plot_html)
 ```
+
+## Question 1
+
+Load the dataset `Seatbelts` as part of the `datasets` package via `data(Seatbelts)`. Use `as.data.frame` to convert the object into a dataframe. Fit a linear model of driver deaths with `kms` and `PetrolPrice` as predictors. Interpret your results.
+
+```{r, Q1Ans}
+library(datasets)
+data(Seatbelts)
+sb <- as.data.frame(Seatbelts)
+fit <- lm(DriversKilled ~ kms + PetrolPrice, sb)
+round(summary(fit)$coef, 4)
+# Numbers need to be centered and maybe scaled
+summary(sb$kms)
+summary(sb$PetrolPrice)
+library(dplyr)
+sb <- mutate(sb,
+             pp=(PetrolPrice - mean(PetrolPrice)) / sd(PetrolPrice),
+             mm=kms/1000,
+             mmc=mm - mean(mm))
+fit2 <- lm(DriversKilled ~ pp + mmc, sb)
+round(summary(fit2)$coef, 4)
+```
+
+**ANSWER:** There are on average 123 drivers killed for the average gas price & distance driven. for every 1 standard deviation increase in gas price, we expect 7 to 8 fewer deaths when holding the distance traveled constant. For every 1000 km driven (holding gas prices constant). All results are significant w/ 95% confidence.
+
+---
+
+## Question 2
+
+Predict the number of driver deaths at the average `kms` and `PetrolPrice` levels.
+
+```{r, Q2Ans}
+fit <- lm(DriversKilled ~ kms + PetrolPrice, sb)
+predict(fit, newdata=data.frame(kms=mean(sb$kms), PetrolPrice=mean(sb$PetrolPrice)))
+```
+
+**ANSWER:** We predict 122 - 123 driver deaths at the average `kms` and `PetrolPrice`.
+
+---
+
+## Question 3
+
+Take the residual for DriversKilled having regressed out `kms` and an intercept and the residual for `PetrolPrice` having regressed out `kms` and an intercept. Fit a regression through the origin of the two residuals and show that it is the same as your coefficient obtained in question 1
+
+```{r, Q3Ans}
+fitFull <- lm(DriversKilled ~ kms + PetrolPrice, sb)
+sb$edk <- resid(lm(DriversKilled ~ kms, sb))
+sb$epp <- resid(lm(PetrolPrice ~ kms, sb))
+fitResid <- lm(edk ~ epp - 1, sb)
+round(summary(fitFull)$coef, 4)
+round(summary(fitResid)$coef, 4)
+```
+
+**ANSWER:** The coefficients are the same (-643.7895) with some (expected) rounding error.
+
+---
+
+## Question 4
+
+Take the residual for `DriversKilled` having regressed out `PetrolPrice` and an intercept. Take the residual for `kms` having regressed out `PetrolPrice` and an intercept. Fit a regression through the origin of the two residuals and show that it is the same as your coefficient obtained in question 1.
+
+```{r, Q4Ans}
+sb$edk <- resid(lm(DriversKilled ~ PetrolPrice, sb))
+sb$ekms <- resid(lm(kms ~ PetrolPrice, sb))
+fitResid <- lm(edk ~ ekms - 1, sb)
+round(summary(fitFull)$coef, 4)
+round(summary(fitResid)$coef, 4)
+```
+
+**ANSWER:** The coefficients are the same (-0.0017) with some (expected) rounding error.
