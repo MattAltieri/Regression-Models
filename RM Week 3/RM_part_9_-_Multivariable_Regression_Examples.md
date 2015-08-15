@@ -77,9 +77,9 @@ summary(lm(y ~ x1))$coefficients
 ```
 
 ```
-               Estimate Std. Error    t value     Pr(>|t|)
-(Intercept)  -0.5407082   1.182793 -0.4571452 6.485785e-01
-x1          100.9628445   2.066423 48.8587563 1.292222e-70
+             Estimate Std. Error   t value     Pr(>|t|)
+(Intercept)  1.103184   1.039556  1.061207 2.912043e-01
+x1          96.137343   1.772138 54.249351 6.524033e-75
 ```
 
 ```r
@@ -88,9 +88,9 @@ summary(lm(y ~ x1 + x2))$coefficients
 
 ```
                 Estimate   Std. Error     t value      Pr(>|t|)
-(Intercept) -0.001965074 0.0019588481   -1.003178  3.182709e-01
-x1          -0.972693657 0.0173747890  -55.983049  1.171768e-75
-x2           0.999759608 0.0001670767 5983.836315 7.920929e-272
+(Intercept) -0.001097209 0.0020591373   -0.532849  5.953568e-01
+x1          -0.988835951 0.0196357122  -50.359057  2.408260e-71
+x2           0.999897739 0.0001989274 5026.444660 1.751766e-264
 ```
 
 ---
@@ -247,7 +247,7 @@ I(1 * (spray == "F"))   2.1666667   1.601110  1.3532281 1.805998e-01
 
 
 ```r
-library(dplyr)
+require(dplyr)
 summary(lm(count ~ spray - 1, InsectSprays))$coefficients
 ```
 
@@ -278,3 +278,143 @@ Source: local data frame [6 x 2]
 ```
 
 ---
+
+## Reordering the Levels
+
+
+```r
+spray2 <- relevel(InsectSprays$spray, "C")
+summary(lm(count ~ spray2, InsectSprays))$coefficients
+```
+
+```
+             Estimate Std. Error  t value     Pr(>|t|)
+(Intercept)  2.083333   1.132156 1.840148 7.024334e-02
+spray2A     12.416667   1.601110 7.755038 7.266893e-11
+spray2B     13.250000   1.601110 8.275511 8.509776e-12
+spray2D      2.833333   1.601110 1.769606 8.141205e-02
+spray2E      1.416667   1.601110 0.884803 3.794750e-01
+spray2F     14.583333   1.601110 9.108266 2.794343e-13
+```
+
+---
+
+## Summary
+
+- If we treat Spray as a factor, R includes an intercept and omits the alphabetically first level of the factor
+    - All $t$-tests are for comparisons of Sprays versus Spray A
+    - Empirical mean for A is the intercept
+    - Other group means are the intercept plus their coefficients
+- If we omit an intercept, then it includes terms for all levels of the factor
+    - Group means are the coefficients
+    - Tests are tests of whether the groups are different than zero (Are the expected counts zero for that spray?)
+- If we want comparisons between Spray B and C, say, we could refit the model with C (or B) as the reference level
+
+---
+
+## Other Thoughts On This Data
+
+- Counts are bounded from below by 0, violates the assumption of normality of the errors
+    - Also there are counts near zero, so both the actual assumption and the intent of the assumption are violated
+- Variance does not appear to be constant
+- Perhaps taking logs of the counts would help
+    - There are 0 counts, so maybe log(Count + 1)
+- Also, we'll cover Poisson GLMs for fitting count data
+
+---
+
+## Recall the `swiss` dataset
+
+
+```r
+head(swiss)
+```
+
+```
+             Fertility Agriculture Examination Education Catholic Infant.Mortality
+Courtelary        80.2        17.0          15        12     9.96             22.2
+Delemont          83.1        45.1           6         9    84.84             22.2
+Franches-Mnt      92.5        39.7           5         5    93.40             20.2
+Moutier           85.8        36.5          12         7    33.77             20.3
+Neuveville        76.9        43.5          17        15     5.16             20.6
+Porrentruy        76.1        35.3           9         7    90.57             26.6
+```
+
+---
+
+## Create a binary variable
+
+
+```r
+swiss <- mutate(swiss, CatholicBin = 1 * (Catholic > 50))
+```
+
+---
+
+## Plot the Data
+
+<div class="rimage center"><img src="fig/unnamed-chunk-16-1.png" title="" alt="" class="plot" /></div>
+
+---
+
+## No Effect of Religion
+
+
+```r
+summary(lm(Fertility ~ Agriculture, swiss))$coefficients
+```
+
+```
+              Estimate Std. Error   t value     Pr(>|t|)
+(Intercept) 60.3043752 4.25125562 14.185074 3.216304e-18
+Agriculture  0.1942017 0.07671176  2.531577 1.491720e-02
+```
+
+---
+
+## Parallel Lines
+
+
+```r
+summary(lm(Fertility ~ Agriculture + factor(CatholicBin), swiss))$coefficients
+```
+
+```
+                       Estimate Std. Error   t value     Pr(>|t|)
+(Intercept)          60.8322366  4.1058630 14.815944 1.032493e-18
+Agriculture           0.1241776  0.0810977  1.531210 1.328763e-01
+factor(CatholicBin)1  7.8843292  3.7483622  2.103406 4.118221e-02
+```
+
+---
+
+## Lines with Different Slopes and Intercepts
+
+
+```r
+summary(lm(Fertility ~ Agriculture * factor(CatholicBin), swiss))$coefficients
+```
+
+```
+                                    Estimate  Std. Error    t value     Pr(>|t|)
+(Intercept)                      62.04993019  4.78915566 12.9563402 1.919379e-16
+Agriculture                       0.09611572  0.09881204  0.9727127 3.361364e-01
+factor(CatholicBin)1              2.85770359 10.62644275  0.2689238 7.892745e-01
+Agriculture:factor(CatholicBin)1  0.08913512  0.17610660  0.5061430 6.153416e-01
+```
+
+---
+
+## Just to Show You It Can Be Done
+
+
+```r
+summary(lm(Fertility ~ Agriculture + Agriculture : factor(CatholicBin), swiss))$coefficients
+```
+
+```
+                                    Estimate Std. Error    t value     Pr(>|t|)
+(Intercept)                      62.63037278 4.22989475 14.8066031 1.056741e-18
+Agriculture                       0.08539357 0.08945287  0.9546209 3.449849e-01
+Agriculture:factor(CatholicBin)1  0.13339603 0.06198753  2.1519817 3.692561e-02
+```

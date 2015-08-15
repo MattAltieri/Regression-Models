@@ -208,9 +208,100 @@ summary(lm(count ~
 ## What If We Omit the Intercept?
 
 ```{r}
-library(dplyr)
+require(dplyr)
 summary(lm(count ~ spray - 1, InsectSprays))$coefficients
 summarize(group_by(InsectSprays, spray), mn=mean(count))
 ```
 
 ---
+
+## Reordering the Levels
+
+```{r}
+spray2 <- relevel(InsectSprays$spray, "C")
+summary(lm(count ~ spray2, InsectSprays))$coefficients
+```
+
+---
+
+## Summary
+
+- If we treat Spray as a factor, R includes an intercept and omits the alphabetically first level of the factor
+    - All $t$-tests are for comparisons of Sprays versus Spray A
+    - Empirical mean for A is the intercept
+    - Other group means are the intercept plus their coefficients
+- If we omit an intercept, then it includes terms for all levels of the factor
+    - Group means are the coefficients
+    - Tests are tests of whether the groups are different than zero (Are the expected counts zero for that spray?)
+- If we want comparisons between Spray B and C, say, we could refit the model with C (or B) as the reference level
+
+---
+
+## Other Thoughts On This Data
+
+- Counts are bounded from below by 0, violates the assumption of normality of the errors
+    - Also there are counts near zero, so both the actual assumption and the intent of the assumption are violated
+- Variance does not appear to be constant
+- Perhaps taking logs of the counts would help
+    - There are 0 counts, so maybe log(Count + 1)
+- Also, we'll cover Poisson GLMs for fitting count data
+
+---
+
+## Recall the `swiss` dataset
+
+```{r}
+head(swiss)
+```
+
+---
+
+## Create a binary variable
+
+```{r}
+swiss <- mutate(swiss, CatholicBin = 1 * (Catholic > 50))
+```
+
+---
+
+## Plot the Data
+
+```{r, fig.height=5, fig.width=8, echo=F}
+ggplot(swiss, aes(x=Agriculture, y=Fertility, color=factor(CatholicBin))) +
+    geom_point(size=6, color="black") +
+    geom_point(size=4) +
+    xlab("% in Agriculture") +
+    ylab("Fertility")
+```
+
+---
+
+## No Effect of Religion
+
+```{r}
+summary(lm(Fertility ~ Agriculture, swiss))$coefficients
+```
+
+---
+
+## Parallel Lines
+
+```{r}
+summary(lm(Fertility ~ Agriculture + factor(CatholicBin), swiss))$coefficients
+```
+
+---
+
+## Lines with Different Slopes and Intercepts
+
+```{r}
+summary(lm(Fertility ~ Agriculture * factor(CatholicBin), swiss))$coefficients
+```
+
+---
+
+## Just to Show You It Can Be Done
+
+```{r}
+summary(lm(Fertility ~ Agriculture + Agriculture : factor(CatholicBin), swiss))$coefficients
+```
