@@ -267,11 +267,12 @@ swiss <- mutate(swiss, CatholicBin = 1 * (Catholic > 50))
 ## Plot the Data
 
 ```{r, fig.height=5, fig.width=8, echo=F}
-ggplot(swiss, aes(x=Agriculture, y=Fertility, color=factor(CatholicBin))) +
+g <- ggplot(swiss, aes(x=Agriculture, y=Fertility, color=factor(CatholicBin))) +
     geom_point(size=6, color="black") +
     geom_point(size=4) +
     xlab("% in Agriculture") +
     ylab("Fertility")
+g
 ```
 
 ---
@@ -279,7 +280,10 @@ ggplot(swiss, aes(x=Agriculture, y=Fertility, color=factor(CatholicBin))) +
 ## No Effect of Religion
 
 ```{r}
-summary(lm(Fertility ~ Agriculture, swiss))$coefficients
+fit <- lm(Fertility ~ Agriculture, swiss)
+summary(fit)$coefficients
+g1 <- g + geom_abline(intercept=coef(fit)[1], slope=coef(fit)[2], size=2)
+g1
 ```
 
 ---
@@ -287,7 +291,11 @@ summary(lm(Fertility ~ Agriculture, swiss))$coefficients
 ## Parallel Lines
 
 ```{r}
-summary(lm(Fertility ~ Agriculture + factor(CatholicBin), swiss))$coefficients
+fit <- lm(Fertility ~ Agriculture + factor(CatholicBin), swiss)
+summary(fit)$coefficients
+g1 <- g + geom_abline(intercept=coef(fit)[1], slope=coef(fit)[2], size=2)
+g1 <- g1 + geom_abline(intercept=coef(fit)[1] + coef(fit)[3], slope=coef(fit)[2], size=2)
+g1
 ```
 
 ---
@@ -295,7 +303,14 @@ summary(lm(Fertility ~ Agriculture + factor(CatholicBin), swiss))$coefficients
 ## Lines with Different Slopes and Intercepts
 
 ```{r}
-summary(lm(Fertility ~ Agriculture * factor(CatholicBin), swiss))$coefficients
+fit <- lm(Fertility ~ Agriculture * factor(CatholicBin), swiss)
+summary(fit)$coefficients
+g1 <- g + geom_abline(intercept=coef(fit)[1], slope=coef(fit)[2], size=2,
+                      color="salmon")
+g1 <- g1 + geom_abline(intercept=coef(fit)[1] + coef(fit)[3],
+                       slope=coef(fit)[2] + coef(fit)[4], size=2,
+                       color=hcl(h=195, c=100, l=65))
+g1
 ```
 
 ---

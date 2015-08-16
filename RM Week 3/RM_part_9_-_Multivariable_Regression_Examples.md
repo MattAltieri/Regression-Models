@@ -78,8 +78,8 @@ summary(lm(y ~ x1))$coefficients
 
 ```
              Estimate Std. Error   t value     Pr(>|t|)
-(Intercept)  1.103184   1.039556  1.061207 2.912043e-01
-x1          96.137343   1.772138 54.249351 6.524033e-75
+(Intercept)  2.044841   1.169116  1.749049 8.341337e-02
+x1          95.082263   2.002382 47.484583 1.891520e-69
 ```
 
 ```r
@@ -87,10 +87,10 @@ summary(lm(y ~ x1 + x2))$coefficients
 ```
 
 ```
-                Estimate   Std. Error     t value      Pr(>|t|)
-(Intercept) -0.001097209 0.0020591373   -0.532849  5.953568e-01
-x1          -0.988835951 0.0196357122  -50.359057  2.408260e-71
-x2           0.999897739 0.0001989274 5026.444660 1.751766e-264
+                 Estimate   Std. Error       t value      Pr(>|t|)
+(Intercept)  0.0001685688 0.0018229807    0.09246877  9.265163e-01
+x1          -1.0082521418 0.0152183784  -66.25227197  1.424401e-82
+x2           1.0000714836 0.0001551205 6447.06095843 5.724308e-275
 ```
 
 ---
@@ -361,7 +361,8 @@ swiss <- mutate(swiss, CatholicBin = 1 * (Catholic > 50))
 
 
 ```r
-summary(lm(Fertility ~ Agriculture, swiss))$coefficients
+fit <- lm(Fertility ~ Agriculture, swiss)
+summary(fit)$coefficients
 ```
 
 ```
@@ -370,13 +371,21 @@ summary(lm(Fertility ~ Agriculture, swiss))$coefficients
 Agriculture  0.1942017 0.07671176  2.531577 1.491720e-02
 ```
 
+```r
+g1 <- g + geom_abline(intercept=coef(fit)[1], slope=coef(fit)[2], size=2)
+g1
+```
+
+<div class="rimage center"><img src="fig/unnamed-chunk-17-1.png" title="" alt="" class="plot" /></div>
+
 ---
 
 ## Parallel Lines
 
 
 ```r
-summary(lm(Fertility ~ Agriculture + factor(CatholicBin), swiss))$coefficients
+fit <- lm(Fertility ~ Agriculture + factor(CatholicBin), swiss)
+summary(fit)$coefficients
 ```
 
 ```
@@ -386,13 +395,22 @@ Agriculture           0.1241776  0.0810977  1.531210 1.328763e-01
 factor(CatholicBin)1  7.8843292  3.7483622  2.103406 4.118221e-02
 ```
 
+```r
+g1 <- g + geom_abline(intercept=coef(fit)[1], slope=coef(fit)[2], size=2)
+g1 <- g1 + geom_abline(intercept=coef(fit)[1] + coef(fit)[3], slope=coef(fit)[2], size=2)
+g1
+```
+
+<div class="rimage center"><img src="fig/unnamed-chunk-18-1.png" title="" alt="" class="plot" /></div>
+
 ---
 
 ## Lines with Different Slopes and Intercepts
 
 
 ```r
-summary(lm(Fertility ~ Agriculture * factor(CatholicBin), swiss))$coefficients
+fit <- lm(Fertility ~ Agriculture * factor(CatholicBin), swiss)
+summary(fit)$coefficients
 ```
 
 ```
@@ -402,6 +420,17 @@ Agriculture                       0.09611572  0.09881204  0.9727127 3.361364e-01
 factor(CatholicBin)1              2.85770359 10.62644275  0.2689238 7.892745e-01
 Agriculture:factor(CatholicBin)1  0.08913512  0.17610660  0.5061430 6.153416e-01
 ```
+
+```r
+g1 <- g + geom_abline(intercept=coef(fit)[1], slope=coef(fit)[2], size=2,
+                      color="salmon")
+g1 <- g1 + geom_abline(intercept=coef(fit)[1] + coef(fit)[3],
+                       slope=coef(fit)[2] + coef(fit)[4], size=2,
+                       color=hcl(h=195, c=100, l=65))
+g1
+```
+
+<div class="rimage center"><img src="fig/unnamed-chunk-19-1.png" title="" alt="" class="plot" /></div>
 
 ---
 
