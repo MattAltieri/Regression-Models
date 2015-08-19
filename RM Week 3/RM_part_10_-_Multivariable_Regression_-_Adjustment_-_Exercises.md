@@ -62,3 +62,148 @@ mmc          -1.7495     0.6145 -2.8469   0.0049
 
 ---
 
+## Question 2
+
+Compare the `kms` coefficient with and without the inclusion of the `PetrolPrice` variable in the model.
+
+
+```r
+cor(sb$pp, sb$mmc)
+```
+
+```
+[1] 0.3839004
+```
+
+```r
+fit3 <- lm(DriversKilled ~ mmc, sb)
+summary(fit2)$coef
+```
+
+```
+              Estimate Std. Error   t value      Pr(>|t|)
+(Intercept) 122.802083  1.6628507 73.850336 2.395106e-141
+pp           -7.838674  1.8055491 -4.341435  2.304713e-05
+mmc          -1.749546  0.6145401 -2.846919  4.902428e-03
+```
+
+```r
+summary(fit3)$coef
+```
+
+```
+              Estimate Std. Error  t value      Pr(>|t|)
+(Intercept) 122.802083  1.7391997 70.60839 2.665611e-138
+mmc          -2.773787  0.5935049 -4.67357  5.596266e-06
+```
+
+```r
+anova(fit2, fit3)
+```
+
+```
+Analysis of Variance Table
+
+Model 1: DriversKilled ~ pp + mmc
+Model 2: DriversKilled ~ mmc
+  Res.Df    RSS Df Sum of Sq      F    Pr(>F)    
+1    189 100339                                  
+2    190 110345 -1    -10006 18.848 2.305e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+**ANSWER:** Holding gas price constant, distance driven is related to a decrease of 1 to 2 driver deaths per 1000 km driven, with a $p$-value of .0049. When not fixing gas prices, distance driven is related to a decrease of 2 to 3 drivers deaths, with a $p$-value of effectively 0. Correlation between distance driven & gas prices suggest some interaction here.
+
+---
+
+## Question 3
+
+Compare the `PetrolPrice` coefficient with and without the inclusion of the `kms` variable in the model.
+
+
+```r
+cor(sb$pp, sb$mmc)
+```
+
+```
+[1] 0.3839004
+```
+
+```r
+fit4 <- lm(DriversKilled ~ pp, sb)
+summary(fit2)$coef
+```
+
+```
+              Estimate Std. Error   t value      Pr(>|t|)
+(Intercept) 122.802083  1.6628507 73.850336 2.395106e-141
+pp           -7.838674  1.8055491 -4.341435  2.304713e-05
+mmc          -1.749546  0.6145401 -2.846919  4.902428e-03
+```
+
+```r
+summary(fit4)$coef
+```
+
+```
+              Estimate Std. Error   t value      Pr(>|t|)
+(Intercept) 122.802083   1.693656 72.507096 2.061333e-140
+pp           -9.812019   1.698084 -5.778288  3.044208e-08
+```
+
+```r
+anova(fit2, fit4)
+```
+
+```
+Analysis of Variance Table
+
+Model 1: DriversKilled ~ pp + mmc
+Model 2: DriversKilled ~ pp
+  Res.Df    RSS Df Sum of Sq      F   Pr(>F)   
+1    189 100339                                
+2    190 104642 -1   -4302.9 8.1049 0.004902 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+**ANSWER:** Holding distance driven as constant, gas prices are related to a decrease of 7 to 8 driver deaths per 1 std deviation change in gas prices, with a $p$-value of .00002. When not fixing distance driven, gas prices are related to a decrease of 9 to 10 drivers deaths, with a $p$-value of effectively 0. Correlation between distance driven & gas prices suggest some interaction here.
+
+---
+
+## Just for fun
+
+
+```r
+fit5 <- lm(DriversKilled ~ pp + mmc + pp * mmc, sb)
+summary(fit5)$coef
+```
+
+```
+               Estimate Std. Error    t value      Pr(>|t|)
+(Intercept) 122.2793560  1.8227763 67.0841256 2.941988e-133
+pp           -7.8454995  1.8079837 -4.3393642  2.330201e-05
+mmc          -1.8567390  0.6338759 -2.9291836  3.819105e-03
+pp:mmc        0.4658707  0.6609899  0.7048076  4.818022e-01
+```
+
+```r
+anova(fit2, fit3, fit4, fit5)
+```
+
+```
+Analysis of Variance Table
+
+Model 1: DriversKilled ~ pp + mmc
+Model 2: DriversKilled ~ mmc
+Model 3: DriversKilled ~ pp
+Model 4: DriversKilled ~ pp + mmc + pp * mmc
+  Res.Df    RSS Df Sum of Sq       F    Pr(>F)    
+1    189 100339                                   
+2    190 110345 -1  -10006.3 18.7979 2.366e-05 ***
+3    190 104642  0    5703.5                      
+4    188 100075  2    4567.3  4.2901   0.01507 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```

@@ -47,3 +47,42 @@ round(summary(fit2)$coef, 4)
 
 ---
 
+## Question 2
+
+Compare the `kms` coefficient with and without the inclusion of the `PetrolPrice` variable in the model.
+
+```{r, Q2Ans}
+cor(sb$pp, sb$mmc)
+fit3 <- lm(DriversKilled ~ mmc, sb)
+summary(fit2)$coef
+summary(fit3)$coef
+anova(fit2, fit3)
+```
+
+**ANSWER:** Holding gas price constant, distance driven is related to a decrease of 1 to 2 driver deaths per 1000 km driven, with a $p$-value of .0049. When not fixing gas prices, distance driven is related to a decrease of 2 to 3 drivers deaths, with a $p$-value of effectively 0. Correlation between distance driven & gas prices suggest some interaction here.
+
+---
+
+## Question 3
+
+Compare the `PetrolPrice` coefficient with and without the inclusion of the `kms` variable in the model.
+
+```{r, Q3Ans}
+cor(sb$pp, sb$mmc)
+fit4 <- lm(DriversKilled ~ pp, sb)
+summary(fit2)$coef
+summary(fit4)$coef
+anova(fit2, fit4)
+```
+
+**ANSWER:** Holding distance driven as constant, gas prices are related to a decrease of 7 to 8 driver deaths per 1 std deviation change in gas prices, with a $p$-value of .00002. When not fixing distance driven, gas prices are related to a decrease of 9 to 10 drivers deaths, with a $p$-value of effectively 0. Correlation between distance driven & gas prices suggest some interaction here.
+
+---
+
+## Just for fun
+
+```{r}
+fit5 <- lm(DriversKilled ~ pp + mmc + pp * mmc, sb)
+summary(fit5)$coef
+anova(fit2, fit3, fit4, fit5)
+```
