@@ -97,7 +97,10 @@ plot(fit)</code></pre>
 </div>
 <div id="summary-of-the-plot" class="section level2">
 <h2>Summary of the Plot</h2>
-<p>Calling a point an outlier is vauge</p>
+<p>Calling a point an outlier is vauge. Instead…</p>
+<p><strong>Leverage:</strong> How far out from the mean (to the right or left) a data point has (if the mean is the fulcrum, a data point far away from it has more leverage)</p>
+<p><strong>Influence:</strong> How far off the regression line a data point w/ high leverage is. If it’s on the regression line, it has high leverage but low influence. If it’s far off the line (and far outside the x range of the data) it has both high leverage and high influence.</p>
+<p>Basically, these points cause the regression line to rotate away from the best fit.</p>
 <ul>
 <li>Outliers can be the result of spurious or real processes</li>
 <li>Outliers can have varying degrees of influence</li>
@@ -116,14 +119,23 @@ plot(fit)</code></pre>
 <ul>
 <li>Do <code>?influence.measures</code> to see the full suite of influence measures in stats. The measures include:
 <ul>
+<li>Residuals
+<ul>
 <li><code>rstandard</code> - standardized residuals, residuals divided by their standard deviation</li>
-<li><code>rstudent</code> - standardized residuals, residuals divided by their standard deviations, where the <span class="math inline">\(i^{th}\)</span> data point was deleted in the calculation of the standard deviation for the residual to follow a <span class="math inline">\(t\)</span> distributio</li>
+<li><code>rstudent</code> - standardized residuals, residuals divided by their standard deviations, where the <span class="math inline">\(i^{th}\)</span> data point was deleted in the calculation of the standard deviation for the residual to follow a <span class="math inline">\(t\)</span> distribution</li>
+<li><code>resid</code> - returns the ordinary residuals</li>
+<li><code>resid(fit) / (1 - hatvalues(fit))</code> where <code>fit</code> is the linear model fit. Returns the PRESS residuals, i.e. the leave-out-one cross-validation residuals - the difference in the response and the predicted response at data point <span class="math inline">\(i\)</span> where it was not included in the model fitting</li>
+</ul></li>
+<li>Leverage
+<ul>
 <li><code>hatvalues</code> - measures the leverage</li>
+</ul></li>
+<li>Influence
+<ul>
 <li><code>dffits</code> - change in the predicted response when the <span class="math inline">\(i^{th}\)</span> point is deleted in fitting the model</li>
 <li><code>dfbetas</code> - change in the individual coefficients when the <span class="math inline">\(i^{th}\)</span> point is deleted in fitting the model</li>
 <li><code>cooks.distance</code> - overall change in the coefficients when the <span class="math inline">\(i^{th}\)</span> point is deleted</li>
-<li><code>resid</code> - returns the ordinary residuals</li>
-<li><code>resid(fit) / (1 - hatvalues(fit))</code> where <code>fit</code> is the linear model fit. Returns the PRESS residuals, i.e. the leave-out-one cross-validation residuals - the difference in the response and the predicted response at data point <span class="math inline">\(i\)</span> where it was not included in the model fitting</li>
+</ul></li>
 </ul></li>
 </ul>
 <hr />

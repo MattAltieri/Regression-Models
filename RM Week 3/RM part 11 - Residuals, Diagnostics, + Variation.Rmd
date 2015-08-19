@@ -58,7 +58,13 @@ points(5, 0, cex=2, bg="darkorange", col="black", pch=21)
 
 ## Summary of the Plot
 
-Calling a point an outlier is vauge
+Calling a point an outlier is vauge. Instead...
+
+**Leverage:** How far out from the mean (to the right or left) a data point has (if the mean is the fulcrum, a data point far away from it has more leverage)
+
+**Influence:** How far off the regression line a data point w/ high leverage is. If it's on the regression line, it has high leverage but low influence. If it's far off the line (and far outside the x range of the data) it has both high leverage and high influence.
+
+Basically, these points cause the regression line to rotate away from the best fit.
 
 - Outliers can be the result of spurious or real processes
 - Outliers can have varying degrees of influence
@@ -73,14 +79,17 @@ Calling a point an outlier is vauge
 ## Influence Measures
 
 - Do `?influence.measures` to see the full suite of influence measures in stats. The measures include:
-    - `rstandard` - standardized residuals, residuals divided by their standard deviation
-    - `rstudent` - standardized residuals, residuals divided by their standard deviations, where the $i^{th}$ data point was deleted in the calculation of the standard deviation for the residual to follow a $t$ distributio
-    - `hatvalues` - measures the leverage
-    - `dffits` - change in the predicted response when the $i^{th}$ point is deleted in fitting the model
-    - `dfbetas` - change in the individual coefficients when the $i^{th}$ point is deleted in fitting the model
-    - `cooks.distance` - overall change in the coefficients when the $i^{th}$ point is deleted
-    - `resid` - returns the ordinary residuals
-    - `resid(fit) / (1 - hatvalues(fit))` where `fit` is the linear model fit. Returns the PRESS residuals, i.e. the leave-out-one cross-validation residuals - the difference in the response and the predicted response at data point $i$ where it was not included in the model fitting
+    - Residuals
+        - `rstandard` - standardized residuals, residuals divided by their standard deviation
+        - `rstudent` - standardized residuals, residuals divided by their standard deviations, where the $i^{th}$ data point was deleted in the calculation of the standard deviation for the residual to follow a $t$ distribution
+        - `resid` - returns the ordinary residuals
+        - `resid(fit) / (1 - hatvalues(fit))` where `fit` is the linear model fit. Returns the PRESS residuals, i.e. the leave-out-one cross-validation residuals - the difference in the response and the predicted response at data point $i$ where it was not included in the model fitting
+    - Leverage
+        - `hatvalues` - measures the leverage
+    - Influence
+        - `dffits` - change in the predicted response when the $i^{th}$ point is deleted in fitting the model
+        - `dfbetas` - change in the individual coefficients when the $i^{th}$ point is deleted in fitting the model
+        - `cooks.distance` - overall change in the coefficients when the $i^{th}$ point is deleted
     
 ---
 
