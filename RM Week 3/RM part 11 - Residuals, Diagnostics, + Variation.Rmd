@@ -84,3 +84,106 @@ Calling a point an outlier is vauge
     
 ---
 
+## How Do I Use All of These Things?
+
+- Be wary of simplistic rules for diagnostic plots and measures. The use of these tools is context specific. It's better to understand what they are trying to accomplish and use them judiciously.
+- Not all of the measures have meaningful absolute scales. You can look at them relative to the values across the data.
+- They probe your data in different ways to diagnose different problems.
+- Patterns in your residual plots generally indicate some poor aspect of model fit. These can include:
+    - Heteroskedasticity (non-constant variance)
+    - Missing model terms
+    - Temporal patterns (plot residuals versus collection order)
+- Residual QQ plots investigate normality of the errors
+- Leverage measures (hat values) can be useful for diagnosing data entry errors.
+- Influence measures get to the bottom line, "how does deleting or including this point impact a particular aspect of the model?"
+
+---
+
+## Case 1
+
+```{r, fig.height=5, fig.width=5, echo=FALSE}
+x <- c(10, rnorm(n))
+y <- c(10, c(rnorm(n)))
+plot(x, y, frame=F, cex=2, pch=21, bg="lightblue", col="black")
+abline(lm(y ~ x))
+```
+
+---
+
+## The Code
+
+```
+x <- c(10, rnorm(n))
+y <- c(10, c(norm(n)))
+plot(x, y, frame=F, cex=2, pch=21, bg="lightblue", col="black")
+abline(lm(y ~ x))
+```
+
+---
+
+## Showing a Couple of the Diagnostic Values
+
+```{r}
+fit <- lm(y ~ x)
+round(dfbetas(fit)[1:10,2], 3)
+round(hatvalues(fit)[1:10],3)
+```
+
+---
+
+## Case 2
+
+```{r, fig.height=5, fig.width=5, echo=FALSE}
+x <- rnorm(n)
+y <- x + rnorm(n, sd=.3)
+x <- c(5, x)
+y <- c(5, y)
+plot(x, y, frame=F, cex=2, pch=21, bg="lightblue", col="black")
+fit2 <- lm(y ~ x)
+abline(fit2)
+```
+
+---
+
+## Looking at Some of the Diagnostics
+
+```{r}
+round(dfbetas(fit2)[1:10,2], 3)
+round(hatvalues(fit2)[1:10], 3)
+```
+
+---
+
+## Example Described by Stefanski TAS 2007 Vol 61.
+
+```{r, fig.height=4, fig.width=4}
+dat <- read.table('http://www4.stat.ncsu.edu/~stefanski/NSF_Supported/Hidden_Images/orly_owl_files/orly_owl_Lin_4p_5_flat.txt', header = FALSE)
+pairs(dat)
+```
+
+---
+
+## Got Our $p$-values, Should We Bother To Do a Residual Plot?
+
+```{r}
+summary(lm(V1 ~ . - 1, dat))$coef
+```
+
+---
+
+## Residual Plot
+
+```{r}
+fit <- lm(V1 ~ . - 1, dat)
+plot(predict(fit), resid(fit), pch='.')
+```
+
+---
+
+## Back to the Swiss Data
+
+```{r, fig.height=5, fig.width=5, echo=FALSE}
+par(mfrow=c(2,2))
+fit <- lm(Fertility ~ ., swiss)
+plot(fit)
+```
