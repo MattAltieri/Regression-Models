@@ -1,0 +1,49 @@
+---
+title: "Multivariable Regression - Adjustment - Exercises"
+output:
+    html_document:
+        keep_md: true
+---
+
+```{r setup, cache=FALSE, echo=FALSE, message=F, warning=F, tidy=FALSE}
+require(knitr)
+options(width=100)
+opts_chunk$set(message=F, error=F, warning=F, comment=NA, fig.align='center', dpi=100, tidy=F, cache.path='.cache/', fig.path='fig/')
+
+options(xtable.type='html')
+knit_hooks$set(inline=function(x) {
+    if(is.numeric(x)) {
+        round(x, getOptions('digits'))
+    } else {
+        paste(as.character(x), collapse=', ')
+    }
+})
+knit_hooks$set(plot=knitr:::hook_plot_html)
+```
+
+## Question 1
+
+Load the dataset `Seatbelts` as part of the `datasets` package via `data(Seatbelts)`. Use `as.data.frame` to convert the object to a dataframe. Fit a linear model of driver deaths with `kms` and `PetrolPrice` as predictors. Interpret your results.
+
+```{r, Q1Ans}
+library(datasets)
+data(Seatbelts)
+sb <- as.data.frame(Seatbelts)
+fit <- lm(DriversKilled ~ kms + PetrolPrice, sb)
+round(summary(fit)$coef, 4)
+# Numbers need to be centered and maybe scaled
+summary(sb$kms)
+summary(sb$PetrolPrice)
+library(dplyr)
+sb <- mutate(sb,
+             pp=(PetrolPrice - mean(PetrolPrice)) / sd(PetrolPrice),
+             mm=kms/1000,
+             mmc=mm - mean(mm))
+fit2 <- lm(DriversKilled ~ pp + mmc, sb)
+round(summary(fit2)$coef, 4)
+```
+
+**ANSWER:** There are on average 123 drivers killed for the average gas price & distance driven. For every 1 standard deviation increase in gas price, we expect 7 to 8 fewer deaths when holding the distance traveled constant. For every 1000 km driven (holding gas prices constant) we expect 1 to 2 fewer deaths. All results are significant w/ 95% confidence.
+
+---
+
