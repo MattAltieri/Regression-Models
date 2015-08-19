@@ -20,3 +20,53 @@ knit_hooks$set(inline=function(x) {
 })
 knit_hooks$set(plot=knitr:::hook_plot_html)
 ```
+
+## Question 1
+
+Load the dataset `Seatbelts` as part of the `datasets` package via `data(Seatbelts)`. Use `as.data.frame` to convert the object to a dataframe. Fit a linear model of driver deaths w/ `kms`, `PetrolPrice`, and `law` as predictors
+
+**ANSWER:** See R code below.
+
+```{r, Q1Ans}
+library(datasets)
+library(dplyr)
+data(Seatbelts)
+sb <- as.data.frame(Seatbelts)
+sb <- mutate(sb,
+             pp=(PetrolPrice - mean(PetrolPrice)) / sd(PetrolPrice),
+             mm=kms / 1000,
+             mmc=mm - mean(mm))
+fit <- lm(DriversKilled ~ mmc + pp + law, sb)
+summary(fit)
+```
+
+---
+
+## Question 2
+
+Refer to question 1. Directly estimate the residual variation via the function `resid`. Compare with R's residual variation estimate.
+
+**ANSWER:** See R code below.
+
+```{r, Q2Ans}
+summary(fit)$sigma^2
+sum(resid(fit)^2)/fit$df
+```
+
+---
+
+## Question 3
+
+Refer to question 1. Perform an analysis of diagnostic measures including dffits, dfbetas, influence, and hat diagonals.
+
+```{r, Q3Ans}
+plot(fit)
+plot(dffits(fit))
+plot(dfbetas(fit)[,2])
+plot(dfbetas(fit)[,3])
+plot(dfbetas(fit)[,4])
+plot(cooks.distance(fit))
+plot(hatvalues(fit))
+```
+
+**ANSWER:** The observations toward the end of the frame deserve some greater scrutiny, based on the hat values & cooks distance for those records. In particular, `law` may be involved, based on the influence those observations have on $\beta_{law}$. The first observation's `PetrolPrice` also could be scrutinized.
