@@ -69,7 +69,7 @@ round(apply(betas, 1, sd), 5)
 
 ```
      x1      x1      x1 
-0.02820 0.02825 0.02851 
+0.02957 0.02957 0.02954 
 ```
 
 ---
@@ -94,7 +94,7 @@ round(apply(betas, 1, sd), 5)
 
 ```
      x1      x1      x1 
-0.03287 0.03853 0.09642 
+0.03447 0.04658 0.08794 
 ```
 
 ---
@@ -104,8 +104,8 @@ round(apply(betas, 1, sd), 5)
 - Notice variance inflation was much worse when we included a variable that was highly related to `x1`
 - We don't know $\sigma$, so we can only estimate the increase in the actual standard error of the coefficients for including a regressor
 - However, $\sigma$ drops out of the relative standard errors. If one sequentially adds variables, one can check the variance or sd inflation for including each one
-- When the other regressors are actually orthogonal to the regressor of interest, then there is no variance inflation
-- The variance inflation factor (VIF) is the increase in the variance for the $i^{th}$ regressor compared to the ideal setting where it is orthogonal to the other regressors
+- When the other regressors are actually orthogonal (uncorrelated) to the regressor of interest, then there is no variance inflation
+- The variance inflation factor (VIF) is the increase in the variance for the $i^{th}$ regressor compared to the ideal setting where it is orthogonal (uncorrelated) to the other regressors
     - The square root of the VIF is the increase in the sd
 - Remember, variance inflation is only part of the picture. We want to include certain variables, even if they dramatically increase our variance
 
@@ -122,7 +122,7 @@ c(summary(lm(y ~ x1 + x2))$cov.unscaled[2,2],
 ```
 
 ```
-[1] 1.393873 8.282416
+[1] 1.901001 7.160999
 ```
 
 ```r
@@ -132,7 +132,7 @@ temp[2:3] / temp[1]
 
 ```
       x1       x1 
-1.373839 8.603311 
+1.825375 6.507430 
 ```
 
 ---

@@ -121,8 +121,8 @@ round(apply(betas, 1, sd), 5)
 - Notice variance inflation was much worse when we included a variable that was highly related to `x1`
 - We don't know $\sigma$, so we can only estimate the increase in the actual standard error of the coefficients for including a regressor
 - However, $\sigma$ drops out of the relative standard errors. If one sequentially adds variables, one can check the variance or sd inflation for including each one
-- When the other regressors are actually orthogonal to the regressor of interest, then there is no variance inflation
-- The variance inflation factor (VIF) is the increase in the variance for the $i^{th}$ regressor compared to the ideal setting where it is orthogonal to the other regressors
+- When the other regressors are actually orthogonal (uncorrelated) to the regressor of interest, then there is no variance inflation
+- The variance inflation factor (VIF) is the increase in the variance for the $i^{th}$ regressor compared to the ideal setting where it is orthogonal (uncorrelated) to the other regressors
     - The square root of the VIF is the increase in the sd
 - Remember, variance inflation is only part of the picture. We want to include certain variables, even if they dramatically increase our variance
 
