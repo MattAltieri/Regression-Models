@@ -20,3 +20,45 @@ knit_hooks$set(inline=function(x) {
 })
 knit_hooks$set(plot=knitr:::hook_plot_html)
 ```
+
+## Question 1
+
+Load the dataset `Seatbelts` as part of the `datasets` package via `data(Seatbelts)`. Use `as.data.frame` to convert the object to a dataframe. Fit a linear model of driver deaths with `kms`, `PetrolPrice`, and `law` as predictors.
+
+```{r, Q1Ans}
+require(datasets)
+require(dplyr)
+data(Seatbelts)
+sb <- as.data.frame(Seatbelts)
+sb <- mutate(sb,
+             pp=(PetrolPrice - mean(PetrolPrice)) / sd(PetrolPrice),
+             mm=kms / 1000,
+             mmc=mm - mean(mm))
+fit <- lm(DriversKilled ~ pp + mmc + law, sb)
+summary(fit)
+```
+
+---
+
+## Question 2
+
+Perform a model selection exercise to arrive at a final model.
+
+```{r, Q2Ans}
+library(car)
+vif(fit)
+fit0 <- update(fit, DriversKilled ~ law)
+fit1 <- update(fit, DriversKilled ~ law + mmc)
+fit2 <- update(fit, DriversKilled ~ law + pp)
+fit3 <- update(fit, DriversKilled ~ law + mmc + pp)
+anova(fit0, fit1, fit2, fit3)
+rbind(summary(fit0)$coef[2,],
+      summary(fit1)$coef[2,],
+      summary(fit2)$coef[2,],
+      summary(fit3)$coef[2,])
+anova(fit0, fit3)
+shapiro.test(fit0$residuals)
+shapiro.test(fit3$residuals)
+```
+
+**ANSWER:** A model which includes `law`, `kms`, and `PetrolPrice` is the more effective model given the available data. However, given that our residuals fail tests for normality at 95%, there are concerns about the model fit. 
