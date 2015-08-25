@@ -20,3 +20,82 @@ knit_hooks$set(inline=function(x) {
 })
 knit_hooks$set(plot=knitr:::hook_plot_html)
 ```
+
+## Key Ideas
+
+- Frequently we care about outcomes that have two values
+    - Alive/dead
+    - Win/loss
+    - Success/Failure
+    - Etc
+- Called binary, Bernoulli, or 0/1 outcomes
+- Collection of exchangeable binary outcomes for the same covariate data are called binomial outcomes
+
+---
+
+## Example: Baltimore Ravens Win/Loss
+
+#### Ravens Data
+
+```{r}
+# download.file("https://dl.dropboxusercontent.com/u/7710864/data/ravensData.rda", destfile="./data/ravensData.rda")
+load("./data/ravensData.rda")
+head(ravensData)
+```
+
+---
+
+## Linear Regression
+
+$$
+RW_i = b_0 + b_1 RS_i + e_i
+$$
+
+$RW_i$ - 1 if a Ravens win, 0 if not
+
+$RS_i$ - Number of points Ravens Scored
+
+$b_0$ - Probability of a Ravens win if they scored 0 points
+
+$b_1$ - Increase in probability of a Ravens win for each additional point
+
+$e_i$ - Residual Variation
+
+---
+
+## Linear Regression in R
+
+```{r}
+lmRavens <- lm(ravensData$ravenWinNum ~ ravensData$ravenScore)
+summary(lmRavens)$coef
+```
+
+---
+
+## Odds
+
+**Binary Outcome 0/1**
+
+$$
+RW_I
+$$
+
+**Probability (0,1)**
+
+$$
+\rm{Pr}(RW_i ~|~ RS_i,b_0,b_1)
+$$
+
+**Odds (0,$\infty$)**
+
+$$
+\frac{\rm{Pr}(RW_i ~|~ RS_i,b_0,b_1)}{1 - \rm{Pr}(RW_i ~|~ RS_i,b_0,b_1)}
+$$
+
+**Log Odds ($-\infty,\infty$)**
+
+$$
+\log\left(\frac{\rm{Pr}(RW_i ~|~ RS_i,b_0,b_1)}{1 - \rm{Pr}(RW_i ~|~ RS_i,b_0,b_1)}\right)
+$$
+
+---

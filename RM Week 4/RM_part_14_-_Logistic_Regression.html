@@ -70,7 +70,79 @@ img {
 </div>
 
 
-
+<div id="key-ideas" class="section level2">
+<h2>Key Ideas</h2>
+<ul>
+<li>Frequently we care about outcomes that have two values
+<ul>
+<li>Alive/dead</li>
+<li>Win/loss</li>
+<li>Success/Failure</li>
+<li>Etc</li>
+</ul></li>
+<li>Called binary, Bernoulli, or 0/1 outcomes</li>
+<li>Collection of exchangeable binary outcomes for the same covariate data are called binomial outcomes</li>
+</ul>
+<hr />
+</div>
+<div id="example-baltimore-ravens-winloss" class="section level2">
+<h2>Example: Baltimore Ravens Win/Loss</h2>
+<div id="ravens-data" class="section level4">
+<h4>Ravens Data</h4>
+<pre class="r"><code># download.file(&quot;https://dl.dropboxusercontent.com/u/7710864/data/ravensData.rda&quot;, destfile=&quot;./data/ravensData.rda&quot;)
+load(&quot;./data/ravensData.rda&quot;)
+head(ravensData)</code></pre>
+<pre><code>  ravenWinNum ravenWin ravenScore opponentScore
+1           1        W         24             9
+2           1        W         38            35
+3           1        W         28            13
+4           1        W         34            31
+5           1        W         44            13
+6           0        L         23            24</code></pre>
+<hr />
+</div>
+</div>
+<div id="linear-regression" class="section level2">
+<h2>Linear Regression</h2>
+<p><span class="math display">\[
+RW_i = b_0 + b_1 RS_i + e_i
+\]</span></p>
+<p><span class="math inline">\(RW_i\)</span> - 1 if a Ravens win, 0 if not</p>
+<p><span class="math inline">\(RS_i\)</span> - Number of points Ravens Scored</p>
+<p><span class="math inline">\(b_0\)</span> - Probability of a Ravens win if they scored 0 points</p>
+<p><span class="math inline">\(b_1\)</span> - Increase in probability of a Ravens win for each additional point</p>
+<p><span class="math inline">\(e_i\)</span> - Residual Variation</p>
+<hr />
+</div>
+<div id="linear-regression-in-r" class="section level2">
+<h2>Linear Regression in R</h2>
+<pre class="r"><code>lmRavens &lt;- lm(ravensData$ravenWinNum ~ ravensData$ravenScore)
+summary(lmRavens)$coef</code></pre>
+<pre><code>                        Estimate  Std. Error  t value   Pr(&gt;|t|)
+(Intercept)           0.28503172 0.256643165 1.110615 0.28135043
+ravensData$ravenScore 0.01589917 0.009058997 1.755069 0.09625261</code></pre>
+<hr />
+</div>
+<div id="odds" class="section level2">
+<h2>Odds</h2>
+<p><strong>Binary Outcome 0/1</strong></p>
+<p><span class="math display">\[
+RW_I
+\]</span></p>
+<p><strong>Probability (0,1)</strong></p>
+<p><span class="math display">\[
+\rm{Pr}(RW_i ~|~ RS_i,b_0,b_1)
+\]</span></p>
+<p><strong>Odds (0,<span class="math inline">\(\infty\)</span>)</strong></p>
+<p><span class="math display">\[
+\frac{\rm{Pr}(RW_i ~|~ RS_i,b_0,b_1)}{1 - \rm{Pr}(RW_i ~|~ RS_i,b_0,b_1)}
+\]</span></p>
+<p><strong>Log Odds (<span class="math inline">\(-\infty,\infty\)</span>)</strong></p>
+<p><span class="math display">\[
+\log\left(\frac{\rm{Pr}(RW_i ~|~ RS_i,b_0,b_1)}{1 - \rm{Pr}(RW_i ~|~ RS_i,b_0,b_1)}\right)
+\]</span></p>
+<hr />
+</div>
 
 
 </div>
