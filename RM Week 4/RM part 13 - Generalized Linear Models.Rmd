@@ -117,7 +117,7 @@ $$
 $$
 0 = \sum_{i=1}^n \frac{(Y_i - \mu_i)}{\phi\mu_i (1 - \mu_i)} W_i \mbox{ and } 0 = \sum_{i=1}^n \frac{(Y_i - \mu_i)}{\phi\mu_i} W_i
 $$
-- These are called _quasi-likelihood_ normal equations
+- These are called _quasi-likelihood_ normal equations. R offers these as an option in the `glm` function as the `quasibinomial` and `quasipoisson` options. These offer more flexible variance options than straight Poisson and binomial models.
 
 ---
 

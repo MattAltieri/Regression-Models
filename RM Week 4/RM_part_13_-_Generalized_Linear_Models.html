@@ -167,7 +167,7 @@ Y_i = \sum_{k=1}^p X_{ik} \beta_k + \epsilon_i
 <li>In the latter cases, it is often relevant to have a more flexible variance model, even if it doesn’t correspond to an actual likelihood <span class="math display">\[
 0 = \sum_{i=1}^n \frac{(Y_i - \mu_i)}{\phi\mu_i (1 - \mu_i)} W_i \mbox{ and } 0 = \sum_{i=1}^n \frac{(Y_i - \mu_i)}{\phi\mu_i} W_i
 \]</span></li>
-<li>These are called <em>quasi-likelihood</em> normal equations</li>
+<li>These are called <em>quasi-likelihood</em> normal equations. R offers these as an option in the <code>glm</code> function as the <code>quasibinomial</code> and <code>quasipoisson</code> options. These offer more flexible variance options than straight Poisson and binomial models.</li>
 </ul>
 <hr />
 </div>
