@@ -1,0 +1,56 @@
+---
+title: "Logistic Regression - Exercises"
+output:
+    html_document:
+        keep_md: true
+---
+
+```{r setup, cache=FALSE, echo=FALSE, message=F, warning=F, tidy=FALSE}
+require(knitr)
+options(width=100)
+opts_chunk$set(message=F, error=F, warning=F, comment=NA, fig.align='center', dpi=100, tidy=F, cache.path='.cache/', fig.path='fig/')
+
+options(xtable.type='html')
+knit_hooks$set(inline=function(x) {
+    if(is.numeric(x)) {
+        round(x, getOptions('digits'))
+    } else {
+        paste(as.character(x), collapse=', ')
+    }
+})
+knit_hooks$set(plot=knitr:::hook_plot_html)
+```
+
+## Question 1
+
+Load the dataset `Seatbelts` as part of the `datasets` package via `data(Seatbelts)`. Use `as.data.frame` to convert the object to a dataframe. Create a new outcome variable for whether or not greater than 119 drivers were killed that month. Fit a logistic regression GLM with this variable as the outcome and `kms`, `PetrolPrice`, and `law` as predictors. Interpret your parameters.
+
+```{r, Q1Ans}
+require(datasets)
+require(dplyr)
+data(Seatbelts)
+sb <- as.data.frame(Seatbelts)
+sb <- mutate(sb,
+             pp = (PetrolPrice - mean(PetrolPrice)) / sd(PetrolPrice),
+             mm = kms / 1000,
+             mmc = mm - mean(mm),
+             dk119 = 1 * (DriversKilled > 119))
+fit <- glm(dk119 ~ pp + mmc + law, binomial, sb)
+1 - exp(summary(fit)$coef[,1])
+exp(confint(fit))
+anova(fit)
+```
+
+**ANSWER:** We saw a 45% decrease in the odds that > 119 drivers were killed once the law was enacted, holding gas prices & distance traveled constant.
+
+---
+
+## Question 2
+
+Fit a binomial model with `DriversKilled` as the outcome and `drivers` as the total count with `kms`, `PetrolPrice`, and `law` as predictors, interpret your results.
+
+```{r, Q2Ans}
+
+```
+
+---
