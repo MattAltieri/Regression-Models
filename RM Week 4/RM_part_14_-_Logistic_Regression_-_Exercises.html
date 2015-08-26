@@ -112,7 +112,57 @@ law   1   1.1782       188     253.62</code></pre>
 <div id="question-2" class="section level2">
 <h2>Question 2</h2>
 <p>Fit a binomial model with <code>DriversKilled</code> as the outcome and <code>drivers</code> as the total count with <code>kms</code>, <code>PetrolPrice</code>, and <code>law</code> as predictors, interpret your results.</p>
+<pre class="r"><code>fit &lt;- glm(cbind(DriversKilled, drivers - DriversKilled) ~ pp + mmc + law, binomial, sb)
+summary(fit)$coef</code></pre>
+<pre><code>                Estimate  Std. Error     z value  Pr(&gt;|z|)
+(Intercept) -2.536637162 0.007399129 -342.829174 0.0000000
+pp          -0.007828905 0.007478975   -1.046789 0.2951971
+mmc          0.003644902 0.002732722    1.333799 0.1822698
+law          0.030785128 0.026526920    1.160524 0.2458355</code></pre>
+<pre class="r"><code>anova(fit)</code></pre>
+<pre><code>Analysis of Deviance Table
+
+Model: binomial, link: logit
+
+Response: cbind(DriversKilled, drivers - DriversKilled)
+
+Terms added sequentially (first to last)
+
+     Df Deviance Resid. Df Resid. Dev
+NULL                   191     234.93
+pp    1   0.0075       190     234.92
+mmc   1   3.6473       189     231.27
+law   1   1.3423       188     229.93</code></pre>
+<pre class="r"><code>1 - exp(summary(fit)$coef[,1])</code></pre>
+<pre><code> (Intercept)           pp          mmc          law 
+ 0.920867939  0.007798339 -0.003651553 -0.031263891 </code></pre>
+<pre class="r"><code>exp(confint(fit))</code></pre>
+<pre><code>                 2.5 %     97.5 %
+(Intercept) 0.07799027 0.08028545
+pp          0.97776134 1.00685099
+mmc         0.99829157 1.00904294
+law         0.97887037 1.08614238</code></pre>
+<p><strong>ANSWER:</strong> This model suggests a 3 % increase in the % of drivers killed once the law was enacted, holding gas price &amp; distance driven fixed.</p>
 <hr />
+</div>
+<div id="question-3" class="section level2">
+<h2>Question 3</h2>
+<p>Refer to question 1. Use the <code>anova</code> function to compare models with just <code>law</code>, <code>law</code> and <code>PetrolPrice</code>, and all three predictors.</p>
+<pre class="r"><code>fit &lt;- glm(dk119 ~ law + pp + mmc, binomial, sb)
+anova(fit, &quot;chisq&quot;)</code></pre>
+<pre><code>Analysis of Deviance Table
+
+Model: binomial, link: logit
+
+Response: dk119
+
+Terms added sequentially (first to last)
+
+     Df Deviance Resid. Df Resid. Dev
+NULL                   191     266.08
+law   1   5.6891       190     260.40
+pp    1   6.7760       189     253.62
+mmc   1   0.0024       188     253.62</code></pre>
 </div>
 
 

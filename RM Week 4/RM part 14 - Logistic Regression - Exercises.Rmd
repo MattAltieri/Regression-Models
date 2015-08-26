@@ -50,7 +50,22 @@ anova(fit)
 Fit a binomial model with `DriversKilled` as the outcome and `drivers` as the total count with `kms`, `PetrolPrice`, and `law` as predictors, interpret your results.
 
 ```{r, Q2Ans}
-
+fit <- glm(cbind(DriversKilled, drivers - DriversKilled) ~ pp + mmc + law, binomial, sb)
+summary(fit)$coef
+anova(fit)
+1 - exp(summary(fit)$coef[,1])
+exp(confint(fit))
 ```
 
+**ANSWER:** This model suggests a 3 % increase in the % of drivers killed once the law was enacted, holding gas price & distance driven fixed.
+
 ---
+
+## Question 3
+
+Refer to question 1. Use the `anova` function to compare models with just `law`, `law` and `PetrolPrice`, and all three predictors.
+
+```{r, Q3Ans}
+fit <- glm(dk119 ~ law + pp + mmc, binomial, sb)
+anova(fit, "chisq")
+```
