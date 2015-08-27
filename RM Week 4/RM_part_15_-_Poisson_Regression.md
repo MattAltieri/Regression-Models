@@ -2,3 +2,363 @@
 
 
 
+## Key Ideas
+
+- Many data take the form of counts
+    - Calls to a call center
+    - Number of flu cases in an area
+    - Number of cars that cross a bridge
+- Data may also be in the form of rates
+    - Percent of children passing a test
+    - Percent of hits to a website from a country
+- Linear regression with transformation is an option
+
+---
+
+## Poisson Distribution
+
+- The Poisson distribution is a useful model for counts and rates
+- Here a rate is count per some monitoring time
+- Some example uses of the Poisson distribution
+    - Modeling web traffic hits
+    - Incidence rates
+    - Approximating binomial probabilities with small $p$ and large $n$
+    - Analyzing contingency table data
+    
+---
+
+## The Poisson Mass Function
+
+- $X \sim Poisson(t\lambda)$ if
+$$
+P(X = x) = \frac{(t\lambda)^x e^{-t\lambda}}{x!}
+$$
+for $x = 0,1,...$
+- The mean of the Poisson is $E[X] = t\lambda$, thus $E[X/t] = \lambda$
+- The variance of the Poisson is $Var(X) = t\lambda$
+- The Poisson tends to a normal as $t\lambda$ gets large
+
+---
+
+
+```r
+par(mfrow=c(1,3))
+plot(0:10, dpois(0:10, lambda=2), type="h", frame=F)
+plot(0:20, dpois(0:20, lambda=10), type="h", frame=F)
+plot(0:200, dpois(0:200, lambda=100), type="h", frame=F)
+```
+
+<div class="rimage center"><img src="fig/unnamed-chunk-1-1.png" title="" alt="" class="plot" /></div>
+
+---
+
+## Poisson Distribution
+
+#### Sort of, showing that the mean and the variance are equal
+
+
+```r
+x <- 0:10000
+lambda <- 3
+mu <- sum(x * dpois(x, lambda=lambda))
+sigmasq <- sum((x - mu)^2 * dpois(x, lambda=lambda))
+c(mu, sigmasq)
+```
+
+```
+[1] 3 3
+```
+
+---
+
+## Example: Leek Group Website Traffic
+
+- Consider the daily copunts to Jeff Leek's website
+
+[http://biostat.jhsph.edu/~jleek/](http://biostat.jhsph.edu/~jleek/)
+
+- Since the unit of time is always one day, set $t = 1$ and then the Poisson mean is interpretted as web hits per day
+- If we set $t = 24$ it would be web hits per hour
+
+---
+
+## Website Data
+
+
+```r
+load("./data/gaData.rda")
+gaData$julian <- julian(gaData$date)
+head(gaData)
+```
+
+```
+        date visits simplystats julian
+1 2011-01-01      0           0  14975
+2 2011-01-02      0           0  14976
+3 2011-01-03      0           0  14977
+4 2011-01-04      0           0  14978
+5 2011-01-05      0           0  14979
+6 2011-01-06      0           0  14980
+```
+
+[http://skardhamar.github.com/rga/](http://skardhamar.github.com/rga/)
+
+---
+
+## Plot Data
+
+
+```r
+plot(gaData$julian, gaData$visits, pch=19, col="darkgrey", xlab="Julian",
+     ylab="Visits")
+```
+
+<div class="rimage center"><img src="fig/unnamed-chunk-4-1.png" title="" alt="" class="plot" /></div>
+
+---
+
+## Linear Regression
+
+$$
+NH_i = b_0 + b_1 JD_i + e_i
+$$
+
+$NH_i$ - number of hits to the website
+
+$JD_i$ - day of the year (Julian day)
+
+$b_0$ - number of hits on Julian day 0 (1970-01-01)
+
+$b_1$ - increase in number of hits per unit day
+
+$e_i$ - variation due to everything we didn't measure
+
+---
+
+## Linear Regression Line
+
+
+```r
+plot(gaData$julian, gaData$visits, pch=19, col="darkgrey", xlab="Julian",
+     ylab="Visits")
+lm1 <- lm(gaData$visits ~ gaData$julian)
+abline(lm1, col="red", lwd=3)
+```
+
+<div class="rimage center"><img src="fig/unnamed-chunk-5-1.png" title="" alt="" class="plot" /></div>
+
+---
+
+## Taking the Log of the Outcome
+
+- Taking the natural log of the outcome has a specific interpretation
+- Consider the model
+$$
+\log(NH_i) = b_0 + b_1 JD_i + e_i
+$$
+
+$NH_i$ - number of hits to the website
+
+$JD_i$ - day of the year (Julian day)
+
+$b_0$ - log number of hits on Julian day 0 (1970-01-01)
+
+$b_1$ - increase in log number of hits per unit day
+
+$e_i$ - variation due to everything we didn't measure
+
+---
+
+## Exponentiating Coefficients
+
+- $e^{E[\log(Y)]}$ geometric mean of $Y$
+    - With no covariates, this is estimated by $E^{\frac{1}{2}\sum_{i=1}^n\log(y_i)} = (\Pi_{i=1}^n y_i)^{1/n}$
+- When you take the natural log of the outcome and fit a regression model, your exponentiated coefficients estimate things about geometric means
+- $e^{\beta_0}$ estimated geometric mean hits on day 0
+- $e^{\beta_1}$ estimated relative increase or decrease in geometric mean hits per day
+- There's a problem with logs if you have zero counts, adding a constant works
+
+
+```r
+round(exp(coef(lm(I(log(gaData$visits + 1)) ~ gaData$julian))), 5)
+```
+
+```
+  (Intercept) gaData$julian 
+      0.00000       1.00231 
+```
+
+---
+
+## Linear vs. Poisson Regression
+
+**Linear**
+
+$$
+NH_i = b_0 + b_1 JD_i + e_i
+$$
+
+or
+
+$$
+E[NH_i ~|~ JD_i,b_0,b_1] = b_0 + b_1 JD_i
+$$
+
+**Poisson/log-linear**
+
+$$
+\log(E[NH_i ~|~ JD_i,b_0,b_1]) = b_0 + b_1 JD_i
+$$
+
+or
+
+$$
+E[NH_i ~|~ JD_i,b_0,b_1] = e^{b_0 + b_1 JD_i}
+$$
+
+---
+
+## Multiplicative Differences
+
+$$
+E[NH_i ~|~ JD_i,b_0,b_1] = e^{b_0 + b_1 JD_i}
+$$
+
+$$
+E[NH_i ~|~ JD_i,b_0,b_1] = e^{b_0} e^{b_1 JD_i}
+$$
+
+If $JD_i$ is increased by one unit, $E[NH_i ~|~ JD_i,b_0,b_1]$ is multiplied by $e^{b_1}$
+
+---
+
+## Poisson Regression in R
+
+
+```r
+plot(gaData$julian, gaData$visits, pch=19, col="darkgrey", xlab="Julian",
+     ylab="Visits")
+lm1 <- lm(gaData$visits ~ gaData$julian)
+glm1 <- glm(gaData$visits ~ gaData$julian, poisson)
+abline(lm1, col="red", lwd=3)
+lines(gaData$julian, glm1$fitted, col="blue", lwd=3)
+```
+
+<div class="rimage center"><img src="fig/unnamed-chunk-7-1.png" title="" alt="" class="plot" /></div>
+
+---
+
+## Mean-Variance Relationship?
+
+
+```r
+plot(glm1$fitted, glm1$residuals, pch=19, col="grey", xlab="Fitted",
+     ylab="Residuals")
+```
+
+<div class="rimage center"><img src="fig/unnamed-chunk-8-1.png" title="" alt="" class="plot" /></div>
+
+---
+
+## Model-Agnostic Standard Errors
+
+
+```r
+require(sandwich)
+confint.agnostic <- function(object, parm, level=0.95, ...) {
+    cf <- coef(object)
+    pnames <- names(cf)
+    if (missing(parm))
+        parm <- pnames
+    else if (is.numeric(parm))
+        parm <- pnames[parm]
+    a <- (1 - level) / 2
+    a <- c(a, 1 - a)
+    pct <- stats:::format.perc(a, 3)
+    fac <- qnorm(a)
+    ci <- array(NA, dim=c(length(parm), 2L), dimnames=list(parm, pct))
+    ses <- sqrt(diag(sandwich::vcovHC(object)))[parm]
+    ci [] <- cf[parm] + ses %o% fac
+    ci
+}
+```
+
+[http://stackoverflow.com/questions/3817182/vcovhc-and-confidence-interval](http://stackoverflow.com/questions/3817182/vcovhc-and-confidence-interval)
+
+---
+
+## Estimating Confidence Intervals
+
+
+```r
+confint(glm1)
+```
+
+```
+                      2.5 %        97.5 %
+(Intercept)   -34.346577587 -31.159715656
+gaData$julian   0.002190043   0.002396461
+```
+
+```r
+confint.agnostic(glm1)
+```
+
+```
+                      2.5 %        97.5 %
+(Intercept)   -36.362674594 -29.136997254
+gaData$julian   0.002058147   0.002527955
+```
+
+---
+
+## Rates
+
+$$
+E[NHSS_i ~|~ JD_i,b_0,b_1] / NH_i = e^{b_0 + b_1 JD_i}
+$$
+
+$$
+\log(E[NHSS_i ~|~ JD_i,b_0,b_1]) - \log(NH_i) = b_0 + b_1 JD_i
+$$
+
+$$
+\log(E[NHSS_i ~|~ JD_i,b_0,b_1]) = \log(NH_i) + b_0 + b_1 JD_i
+$$
+
+---
+
+## Fitting Rates in R
+
+
+```r
+glm2 <- glm(simplystats ~ julian(date), poisson, gaData, offset=log(visits + 1))
+plot(julian(gaData$date), glm2$fitted, col="blue", pch=19, xlab="Date",
+     ylab="Fitted Counts")
+points(julian(gaData$date), glm1$fitted, col="red", pch=19)
+```
+
+<div class="rimage center"><img src="fig/unnamed-chunk-11-1.png" title="" alt="" class="plot" /></div>
+
+---
+
+## Fitting Rates in R
+
+
+```r
+plot(julian(gaData$date), gaData$simplystats / (gaData$visits + 1),
+     col="grey", xlab="Date", ylab="Fitted Rates", pch=19)
+lines(julian(gaData$date), glm2$fitted / (gaData$visits + 1), col="blue",
+      lwd=3)
+```
+
+<div class="rimage center"><img src="fig/unnamed-chunk-12-1.png" title="" alt="" class="plot" /></div>
+
+---
+
+## More Information
+
+- [Log-linear models and multiway tables](http://ww2.coastal.edu/kingw/statistics/R-tutorials/loglin.html)
+- [Wikipedia on Poisson regression](https://en.wikipedia.org/wiki/Poisson_regression), [Wikipedia on overdispersion](https://en.wikipedia.org/wiki/Overdispersion)
+- [Regression models for count data in R](https://cran.r-project.org/web/packages/pscl/vignettes/countreg.pdf)
+- [pscl package](https://cran.r-project.org/web/packages/pscl/index.html) - the function `zeroinfl` fits zero inflated models
