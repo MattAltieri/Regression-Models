@@ -1,0 +1,54 @@
+---
+title: "Poisson Regression - Exercises"
+output:
+    html_document:
+        keep_md: true
+---
+
+```{r setup, cache=FALSE, echo=FALSE, message=F, warning=F, tidy=FALSE}
+require(knitr)
+options(width=100)
+opts_chunk$set(message=F, error=F, warning=F, comment=NA, fig.align='center', dpi=100, tidy=F, cache.path='.cache/', fig.path='fig/')
+
+options(xtable.type='html')
+knit_hooks$set(inline=function(x) {
+    if(is.numeric(x)) {
+        round(x, getOptions('digits'))
+    } else {
+        paste(as.character(x), collapse=', ')
+    }
+})
+knit_hooks$set(plot=knitr:::hook_plot_html)
+```
+
+## Question 1
+
+Load the dataset `Seatbelts` as part of the `datasets` package via `data(Seatbelts)`. Use `as.data.frame` to convert the object to a dataframe. Fit a Poisson regression GLM with `DriversKilled` as the outcome and `kms`, `PetrolPrice`, and `law` as predictors. Interpret your results
+
+```{r, Q1Ans}
+require(datasets)
+require(dplyr)
+data(Seatbelts)
+sb <- as.data.frame(Seatbelts)
+sb <- mutate(sb,
+             pp=(PetrolPrice - mean(PetrolPrice)) / sd(PetrolPrice),
+             mm=kms / 1000,
+             mmc=mm - mean(mm))
+fit <- glm(DriversKilled ~ pp + mmc + law, poisson, sb)
+summary(fit)
+exp(confint(fit))
+anova(fit)
+```
+
+---
+
+## Question 2
+
+Refer to question 1. Fit a linear model with the log of drivers killed as the outcome. Interpret your results.
+
+```{r, Q2Ans}
+fit2 <- lm(log(DriversKilled) ~ pp + mmc + law, sb)
+summary(fit)
+```
+
+---
