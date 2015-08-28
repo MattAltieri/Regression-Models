@@ -48,7 +48,27 @@ Refer to question 1. Fit a linear model with the log of drivers killed as the ou
 
 ```{r, Q2Ans}
 fit2 <- lm(log(DriversKilled) ~ pp + mmc + law, sb)
-summary(fit)
+round(summary(fit)$coef, 3)
+round(summary(fit2)$coef, 3)
 ```
 
 ---
+
+## Question 3
+
+Refer to question 1. Fit your Poisson log-linear model with `drivers` as a log offset (to consider the proportion of drivers killed of those killed or seriously injured)
+
+```{r, Q3Ans}
+fit3 <- glm(DriversKilled ~ pp + mmc + law, poisson, sb, offset=log(drivers))
+summary(fit3)
+```
+
+---
+
+## Question 4
+
+Refer to Question 1. Use the `anova` function to compare the models with just `law`, `law` and `PetrolPrice`, and all three predictors.
+
+```{r, Q4Ans}
+anova(glm(DriversKilled ~ law + pp + mmc, poisson, sb), "chisq")
+```
