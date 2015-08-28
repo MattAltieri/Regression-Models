@@ -8,12 +8,12 @@
 - How can we fit such a model using linear models (called scatterplot smoothing)
 - Consider the model
 $$
-Y_i = \beta_0 + \beta_1 X_i + \sum_{k=1}^d(x_i - \xi_k) + \gamma_k + \epsilon_k
+Y_i = \beta_0 + \beta_1 X_i + \sum_{k=1}^d(x_i - \xi_k)_+ \gamma_k + \epsilon_k
 $$
-where $(a)_{+} = a$ if $a > 0$ and 0 otherwise and $\xi_1 \le ... \le \xi_d$ are known knot points
+where $(a)_+ = a$ if $a > 0$ and 0 otherwise and $\xi_1 \le ... \le \xi_d$ are known knot points
 - Prove to yourself that the mean function
 $$
-\beta_0 + \beta_1 X_i + \sum_{k=1}^d(x_i - \xi_k) + \gamma_k
+\beta_0 + \beta_1 X_i + \sum_{k=1}^d(x_i - \xi_k)_+ \gamma_k
 $$
 is continuous at the knot points
 
@@ -43,7 +43,7 @@ lines(x, yhat, col="red", lwd=2)
 - Adding squared terms makes it continuously differentiable at the knot points
 - Adding cubic terms makes it twice continuously differentiable at the knot points, etc
 $$
-Y_i = \beta_0 + \beta_1 X_i + \beta_2 X_i^2 + \sum_{k=1}^d(x_i - \xi_k)^2 + \gamma_k + \epsilon_i
+Y_i = \beta_0 + \beta_1 X_i + \beta_2 X_i^2 + \sum_{k=1}^d(x_i - \xi_k)_+^2 \gamma_k + \epsilon_i
 $$
 
 ---

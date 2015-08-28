@@ -76,10 +76,10 @@ img {
 <li>Consider a model <span class="math inline">\(Y_i = f(X_i) + \epsilon\)</span></li>
 <li>How can we fit such a model using linear models (called scatterplot smoothing)</li>
 <li>Consider the model <span class="math display">\[
-Y_i = \beta_0 + \beta_1 X_i + \sum_{k=1}^d(x_i - \xi_k) + \gamma_k + \epsilon_k
-\]</span> where <span class="math inline">\((a)_{+} = a\)</span> if <span class="math inline">\(a &gt; 0\)</span> and 0 otherwise and <span class="math inline">\(\xi_1 \le ... \le \xi_d\)</span> are known knot points</li>
+Y_i = \beta_0 + \beta_1 X_i + \sum_{k=1}^d(x_i - \xi_k)_+ \gamma_k + \epsilon_k
+\]</span> where <span class="math inline">\((a)_+ = a\)</span> if <span class="math inline">\(a &gt; 0\)</span> and 0 otherwise and <span class="math inline">\(\xi_1 \le ... \le \xi_d\)</span> are known knot points</li>
 <li>Prove to yourself that the mean function <span class="math display">\[
-\beta_0 + \beta_1 X_i + \sum_{k=1}^d(x_i - \xi_k) + \gamma_k
+\beta_0 + \beta_1 X_i + \sum_{k=1}^d(x_i - \xi_k)_+ \gamma_k
 \]</span> is continuous at the knot points</li>
 </ul>
 <hr />
@@ -105,7 +105,7 @@ lines(x, yhat, col=&quot;red&quot;, lwd=2)</code></pre>
 <ul>
 <li>Adding squared terms makes it continuously differentiable at the knot points</li>
 <li>Adding cubic terms makes it twice continuously differentiable at the knot points, etc <span class="math display">\[
-Y_i = \beta_0 + \beta_1 X_i + \beta_2 X_i^2 + \sum_{k=1}^d(x_i - \xi_k)^2 + \gamma_k + \epsilon_i
+Y_i = \beta_0 + \beta_1 X_i + \beta_2 X_i^2 + \sum_{k=1}^d(x_i - \xi_k)_+^2 \gamma_k + \epsilon_i
 \]</span></li>
 </ul>
 <hr />
